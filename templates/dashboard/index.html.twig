@@ -140,46 +140,6 @@
         </div> 
         <!-- Intro Section --> 
     </section>
-    {# <section>
-        <!-- Intro Section StudentForm-->
-        <div class="modal fade" id="modalReceveForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
-                        <i class="fas fa-money-check-alt fa-2x mx-auto white-text"></i> 
-                    <h4 class="modal-title font-weight-bold white-text mx-auto">Rétrait d'argent</h4>
-                    <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    </div>
-                     <div class="modal-body mx-3">  
-                        <div class="container mask">
-                            <form method="POST">
-                                <div class="mx-auto mb-3">
-                                    <div class="col-md-8 mx-auto">
-                                        <div class="md-form form-outline">
-                                            <input type="text" id="formTextExample1" class="form-control" name="secretid" aria-describedby="textExample1" data-mdb-showcounter="true" maxlength="10"/>
-                                            <label class="form-label" for="formTextExample1">Secret ID</label>
-                                            </div>
-                                            <div id="textExample1" class="form-text font-weight-bolder">
-                                                Entrez le code secret de rétrait d'argent.
-                                            </div>
-                                            <div class="md-form form-helper"></div>
-                                        </div>
-                                           
-                                    </div>
-                                <div class="row">
-                                    <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Vérifier</button> 
-                                </div>
-                            </form>
-                        </div>
-                    </div>   
-                </div>
-            </div>
-        </div> 
-        <!-- Intro Section --> 
-    </section> #}
     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') %}
         <section>
             <!-- Intro Section StudentForm-->
@@ -188,13 +148,13 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
-                            <i class="fas fa-user-plus fa-2x white-text mx-auto"></i> 
+                            <i class="fas fa-user-plus fa-2x white-text mx-auto"></i>
                             <h4 class="modal-title font-weight-bold white-text mx-auto">Mise à jour - Caisse de la société</h4>
                             <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body mx-3">  
+                        <div class="modal-body mx-3">
                             <div class="container mask">
                                 {{ form_start(formcaisse) }}
                                     <div class="mx-auto mb-3">
@@ -206,26 +166,26 @@
                                                 <option value="€">Euro</option>
                                               </select>
                                             </div>
-                                        </div>  
+                                        </div>
                                         <div class="md-form col-md-8 mx-auto" id="upcaisse">
-                                            
+
                                         </div>
                                         <div class="md-form col-md-8 mx-auto" id="date">
                                             <input type="datetime-local" class="md-form" name="date" id="" aria-describedby="helpId" placeholder="Date">
                                             <small id="helpId" class="form-text text-muted font-weight-bold">Renseignez la date uniquement en cas d'oublie d'insertion précedente.</small>
                                             </div>
-                                        </div>    
+                                        </div>
                                     </div>
                                     <div class="row">
-                                        <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Ajouter</button> 
+                                        <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Ajouter</button>
                                     </div>
                                 {{ form_end(formcaisse) }}
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
-            </div> 
-            <!-- Intro Section --> 
+            </div>
+            <!-- Intro Section -->
         </section>
     {% endif %}
 
@@ -233,7 +193,7 @@
         <div class="container mb-4 bg-light">
             <div class="row justify-content-center mx-auto">
                 <div class="">
-                    <a name="" id="" class="btn btn-primary btn-md btn-rounded font-weight-bold" href="{{ path('findetat') }}" role="button">Etat du jour</a>
+                    <a  id="" class="btn btn-primary btn-md btn-rounded font-weight-bold" href="{{ path('findetat') }}" role="button">Etat du jour</a>
                 </div>
                 {# <div class="">
                     <a class="btn btn-indigo btn-md btn-rounded font-weight-bold" href="{{ path('operationlotdubai',{'transact':'Lot Dubai'}) }}">Caisse Dubai</a>
@@ -270,7 +230,7 @@
                             <button type="button" class="btn btn-sm col-sm-6" id="operation">Opérations en attente</button>
                         {% endif %}
                         <button type="button" class="btn btn-sm col-sm-6" id="facture">Opérations validées</button>
-                        {# <button type="button" class="btn btn-sm col-sm-6" id="transfert">Transferts</button>  #}
+                        <button type="button" class="btn btn-sm col-sm-6" id="transfert">Transferts</button>
                     </div>
                 </div>
             </div>
@@ -508,7 +468,7 @@
                 </table>
             </div>  
         </div>
-        {# <div class="row ">  
+        <div class="row ">
             <div id="showtransfert" class="mx-auto text-center card-body card-body-cascade text-center table-responsive col-lg-12 mx-auto col-md-auto col-sm-auto card" style="display:none">
                 <h4 class='mb-1'>Liste des Transferts</h4>
                 <table id="dt5" class="table justify-content-center align-items-center">
@@ -570,7 +530,7 @@
                     </tbody> 
                 </table>
             </div>  
-        </div> #}
+        </div>
            
                 
         

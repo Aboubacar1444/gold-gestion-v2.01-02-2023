@@ -1,4 +1,47 @@
 <header>
+
+    <section>
+        <!-- Intro Section Retrait transfert-->
+        <div class="modal fade" id="modalReceveForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
+                        <i class="fas fa-money-check-alt fa-2x mx-auto white-text"></i>
+                        <h4 class="modal-title font-weight-bold white-text mx-auto">Rétrait d'argent</h4>
+                        <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        <div class="container mask">
+                            <form method="POST" action="{{path('dashboard')}}">
+                                <div class="mx-auto mb-3">
+                                    <div class="col-md-8 mx-auto">
+                                        <div class="md-form form-outline">
+                                            <input type="text" id="formTextExample1" class="form-control" name="secretid" aria-describedby="textExample1" data-mdb-showcounter="true" maxlength="10"/>
+                                            <label class="form-label" for="formTextExample1">Secret ID</label>
+                                        </div>
+                                        <div id="textExample1" class="form-text font-weight-bolder">
+                                            Entrez le code secret de rétrait d'argent.
+                                        </div>
+                                        <div class="md-form form-helper"></div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Vérifier</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Intro Retrait transfert -->
+    </section>
+
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg scrolling-navbar">
 
@@ -7,7 +50,7 @@
         {% if society.logo %}
           <a class="navbar-brand pb-4" href="{{ path('dashboard') }}" style="width:175px;"><img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid"  alt="logo"></a>
         {% endif %}
-        
+
         {% endfor %}
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
           <span class="fas fa-bars indigo-text"></span>
@@ -41,7 +84,7 @@
                     <i class="fas fa-plus blue-text mr-2"></i> Nouveau agent
                   </a>
                 {% endif %}
-                
+
                 <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" data-toggle="modal" data-target="#modalClientForm" data-offset="80">
                   <i class="fas fa-plus blue-text mr-2"></i> Nouveau client
                 </a>
@@ -55,7 +98,7 @@
                   </a> #}
                 {% endif %}
                 <hr class="dropdown-divider m-0 p-0">
-                
+
                 <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('operationtemp', {'transact':'Achat'}) }}">
                   <i class="fas fa-plus blue-text mr-2"></i> Or | Achat
                 </a>
@@ -64,7 +107,7 @@
                   <i class="fas fa-plus blue-text mr-2"></i> Or | Vente
                 </a>
                 <hr class="dropdown-divider m-0 p-0">
-                
+
                 <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('operationtdr', {'transact':'Dépôt'}) }}">
                   <i class="fas fa-plus blue-text mr-2"></i> Dépôt
                 </a>
@@ -73,18 +116,18 @@
                   <i class="fas fa-plus blue-text mr-2"></i> Rétrait
                 </a>
 
-                {# <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('transfert') }}">
+                <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('transfert') }}">
                   <i class="fas fa-plus blue-text mr-2"></i> Transfert d'argent|Envoi
-                </a> 
+                </a>
                 <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" data-toggle="modal" data-target="#modalReceveForm" data-offset="80">
                   <i class="fas fa-money-check-alt blue-text mr-1"></i> Transfert d'argent|Rétrait
-                </a>   #}
+                </a>
               </div>
             </li>
-            
-            
+
+
           <!-- Social Icon  -->
-          
+
             <li class="nav-item mr-2">
               {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') %}
                 {% for society in society %}
@@ -130,7 +173,7 @@
 
     </nav>
     <div class="text-center col-md-8 mx-auto">
-            
+
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success alert-dismissible fade show justify-content-center" role="alert">
                     <strong> {{ message }} </strong>
