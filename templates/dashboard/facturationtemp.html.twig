@@ -1,0 +1,606 @@
+{% extends "base.html.twig" %}
+{% block print %}
+    <link rel="stylesheet" media="print" href="{{ asset('./assets/css/print.css') }}" />
+{% endblock %}
+{% block body %}
+    <section class="container card" style="margin-top:40px!important; border:1px solid dark">
+        {% for society in society %} 
+            <div class="row mask">
+                {% if society.logo %}
+                <div class="col-md-12 mb-5">
+                    <div class="justify-content-center align-items-center mx-auto my-auto text-center">
+                        <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-12">
+                     <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
+                </div>
+                <div class="row mx-auto">
+                    <div class="col-md-10 mx-auto mb-1">
+                        <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.tel }}</h5>
+                    </div>
+                    {# <div class="col-md-1 m-0 p-0"><img  class="img-fluid w-100" src="{{asset('./assets/files/gold.png')}}"></div> #}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row mask aqua-gradient-rgba mt-3">
+            <h1 class="mx-auto font-weight-bold white-text"> {{type}} - N° {{numero}}</h1>
+        </div>
+        <div class="row mask mt-3 mb-3">
+            <div class="row mask mt-3 mx-auto">
+                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-12"> <u>Client</u>: {{client.tempclient}}</h3>
+                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-12"> <u>N°Tél</u>: {{client.tel}}</h3>
+            </div>
+        </div>
+        {% if type is same as ('Achat') or type is same as ('Vente') %}
+            <div class="row font-weight-bold text-black-50 col-md-12  mt-3">
+                <div class="col-md-6"> {{date|date('d - m - Y')}} | 
+                    <span id="time"></span>
+                </div>
+                <div class="col-md-6"> Nombre barre(s) | {{barre}} </div>  
+            </div>
+            <div class="container mt-3">
+                <table class="table text-center align-items-center table-bordered">
+                    {# <thead class="thead-light"> #}
+                        <tr class="thead-light">
+                            <th class="font-weight-bold ">Base</th>
+                            <th class="font-weight-bold ">Poids dans l'air</th>
+                            <th class="font-weight-bold ">Poids dans l'eau</th>
+                            <th class="font-weight-bold ">Densité</th>
+                            <th class="font-weight-bold ">Carat</th>
+                            <th class="font-weight-bold ">Prix unitaire</th>
+                            <th class="font-weight-bold ">Montant</th>
+                        </tr>
+                    {# </thead> #}
+                    {# <tbody class="text-bold"> #}
+                        {% for operation in operations %}
+                        <tr class="text-bold">
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ operation.base }} <a class= "btn btn-outline-warning btn-sm btn-rounded" href="{{ path('updateoperationtemp',{'id':operation.id, 'temp':true}) }}"><i class="fas fa-edit fa-2x"></i></a></td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ operation.poidair }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ operation.poideau }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ operation.densite }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ operation.karat }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ operation.prixu|number_format(0,' ',' ') }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ operation.montant|number_format(0,' ',' ') }}</td>
+                        </tr>
+                        {% endfor %}
+                    {# </tbody> #}
+                    {# <tfoot class="mt-3"> #}
+                        <tr>
+                            {# <td class="font-weight-bolder action" style="font-size:18px!important;"></td> #}
+                            <td class="font-weight-bolder " style="font-size:18px!important;">-</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ totalair }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;">{{ totaleau }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;" id="tofixed">{{ (totalair / totaleau) }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;" id="carat">{{ totalcarat }}</td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;" colspan="2">Montant Total: {{totalmontant|number_format(0, ' ', ' ') }} FCFA</td>
+                        </tr>
+                        <tr class="">
+                            <td class="font-weight-bolder border-0 action" style="font-size:18px!important;"></td>
+                            <td class="font-weight-bolder border-0" style="font-size:18px!important;">-</td>
+                            <td class="font-weight-bolder border-0" style="font-size:18px!important;">-</td>
+                            <td class="font-weight-bolder border-0" style="font-size:18px!important;">-</td>
+                            <td class="font-weight-bolder border-0" style="font-size:18px!important;">-</td>
+                            <td class="font-weight-bolder border-0" style="font-size:18px!important;">-</td>
+                            <td class="font-weight-bolder" style="font-size:18px!important;" colspan='2'>
+                                Avance:
+                                    {% for operation in operations %}
+                                        {% if operation.avance == null or operation.avance == 0 %}
+                                            {% else %}
+                                            {{operation.avance|number_format(0, ' ', ' ') }}  
+                                        {% endif %}
+                                    {% endfor %} 
+                            </td>  
+                        </tr>
+                        <tr class="">
+                            <td class="font-weight-bolder action border-0 " style="font-size:18px!important;"></td>
+                            <td class="font-weight-bolder border-0 m-0 p-0 text-capitalize " style="font-size:18px!important;" colspan='3' id="inletter"></td>
+                            <td class="font-weight-bolder " style="font-size:18px!important;" colspan='4' align="center">Total: <span id="number"> {{ total|number_format(0,' ',' ') }}</span> FCFA</td>  
+                        </tr>
+                    {# </tfoot> #}
+                </table>
+                <h5 class="font-weight-bolder border-info m-0 p-0" align="left" style="font-size:18px!important;"><u>En langue locale</u>: {{ (total / 5)|number_format(0,' ',' ') }} FCFA</h5>
+            </div>
+        {% endif %}
+        <div class="container mt-3">
+            <div class="row text-center justify-content-center">
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Gérant</u>:</h3>
+                </div>
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Comptable</u>:</h3>
+                </div>
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Client</u>:</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row mx-auto">
+            <button id="valid" type="button" class="btn btn-rounded btn-outline-success btn-md mx-auto text-center">Valider</button>
+            <a name="" id="print" class="btn btn-rounded btn-md btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
+        </div>
+    </section>
+{% endblock %}
+{% block ScriptP %}
+    <script>
+        function getKarat(densite){
+                var karat=0;
+                if(densite < 13.00){
+                    karat=0;
+                }
+                else if(densite == 13.00 || densite <= 13.02){
+                    karat=10.00;
+                }
+                else if(densite == 13.03 || densite <= 13.05){
+                    karat=10.10;
+                }
+                else if(densite == 13.06 || densite <= 13.08){
+                    karat=10.20;
+                }
+                else if(densite == 13.09 || densite <= 13.11){
+                    karat=10.30;
+                }
+                else if(densite == 13.12 || densite <= 13.14){
+                    karat=10.40;
+                }
+                else if(densite == 13.15 || densite <= 13.17){
+                    karat=10.50;
+                }
+                else if(densite == 13.18 || densite <= 13.21){
+                    karat=10.60;
+                }
+                else if(densite == 13.22 || densite <= 13.24){
+                    karat=10.70;
+                }
+                else if(densite == 13.25 || densite <= 13.27){
+                    karat=10.80;
+                }
+                else if(densite == 13.28 || densite <= 13.30){
+                    karat=10.90;
+                }
+                else if(densite == 13.28 || densite <= 13.30){
+                    karat=10.90;
+                }
+                else if(densite == 13.28 || densite <= 13.30){
+                    karat=10.90;
+                }
+                else if(densite == 13.28 || densite <= 13.30){
+                    karat=10.90;
+                }
+                else if(densite == 13.31 || densite <= 13.33){
+                    karat=11.00;
+                }
+                else if(densite == 13.34 || densite <= 13.37){
+                    karat=11.10;
+                }
+                else if(densite == 13.38 || densite <= 13.40){
+                    karat=11.20;
+                }
+                else if(densite == 13.41 || densite <= 13.43){
+                    karat=11.30;
+                }
+                else if(densite == 13.44 || densite <= 13.46){
+                    karat=11.40;
+                }
+                else if(densite == 13.47 || densite <= 13.50){
+                    karat=11.50;
+                }
+                else if(densite == 13.51 || densite <= 13.53){
+                    karat=11.60;
+                }
+                else if(densite == 13.54 || densite <= 13.56){
+                    karat=11.70;
+                }
+                else if(densite == 13.57 || densite <= 13.60){
+                    karat=11.80;
+                }
+                else if(densite == 13.61 || densite <= 13.63){
+                    karat=11.90;
+                }
+                else if(densite == 13.64 || densite <= 13.66){
+                    karat=12.00;
+                }
+                else if(densite == 13.67 || densite <= 13.70){
+                    karat=12.10;
+                }
+                else if(densite == 13.71 || densite <= 13.73){
+                    karat=12.20;
+                }
+                else if(densite == 13.74 || densite <= 13.76){
+                    karat=12.30;
+                }
+                else if(densite == 13.77 || densite <= 13.80){
+                    karat=12.40;
+                }
+                else if(densite == 13.81 || densite <= 13.83){
+                    karat=12.50;
+                }
+                else if(densite == 13.84 || densite <= 13.87){
+                    karat=12.60;
+                }
+                else if(densite == 13.88 || densite <= 13.90){
+                    karat=12.70;
+                }
+                else if(densite == 13.91 || densite <= 13.94){
+                    karat=12.80;
+                }
+                else if(densite == 13.95 || densite <= 13.97){
+                    karat=12.90;
+                }
+                else if(densite == 13.98 || densite <= 14.01){
+                    karat=13.00;
+                }
+                else if(densite == 14.02 || densite <= 14.04){
+                    karat=13.10;
+                }
+                else if(densite == 14.05 || densite <= 14.08){
+                    karat=13.20;
+                }
+                else if(densite == 14.09 || densite <= 14.11){
+                    karat=13.30;
+                }
+                else if(densite == 14.12 || densite <= 14.15){
+                    karat=13.40;
+                }
+                else if(densite == 14.16 || densite <= 14.19){
+                    karat=13.50;
+                }
+                else if(densite == 14.20 || densite <= 14.23){
+                    karat=13.60;
+                }
+                else if(densite == 14.24 || densite <= 14.26){
+                    karat=13.70;
+                }
+                else if(densite == 14.27 || densite <= 14.30){
+                    karat=13.80;
+                }
+                else if(densite == 14.31 || densite <= 14.34){
+                    karat=13.90;
+                }
+                else if(densite == 14.35 || densite <= 14.37){
+                    karat=14.00;
+                }
+                else if(densite == 14.38 || densite <= 14.41){
+                    karat=14.10;
+                }
+                else if(densite == 14.42 || densite <= 14.45){
+                    karat=14.20;
+                }
+                else if(densite == 14.46 || densite <= 14.49){
+                    karat=14.30;
+                }
+                else if(densite == 14.50 || densite <= 14.53){
+                    karat=14.40;
+                }
+                else if(densite == 14.54 || densite <= 14.56){
+                    karat=14.50;
+                }
+                else if(densite == 14.57 || densite <= 14.60){
+                    karat=14.60;
+                }
+                else if(densite == 14.61 || densite <= 14.64){
+                    karat=14.70;
+                }
+                else if(densite == 14.65 || densite <= 14.68){
+                    karat=14.80;
+                }
+                else if(densite == 14.69 || densite <= 14.72){
+                    karat=14.90;
+                }
+                else if(densite == 14.73 || densite <= 14.76){
+                    karat=15.00;
+                }
+                else if(densite == 14.77 || densite <= 14.80){
+                    karat=15.10;
+                }
+                else if(densite == 14.81 || densite <= 14.84){
+                    karat=15.20;
+                }
+                else if(densite == 14.85 || densite <= 14.88){
+                    karat=15.30;
+                }
+                else if(densite == 14.89 || densite <= 14.92){
+                    karat=15.40;
+                }
+                else if(densite == 14.93 || densite <= 14.96){
+                    karat=15.50;
+                }
+                else if(densite == 14.97 || densite <= 15.00){
+                    karat=15.60;
+                }
+                else if(densite == 15.01 || densite <= 15.04){
+                    karat=15.70;
+                }
+                else if(densite == 15.05 || densite <= 15.08){
+                    karat=15.80;
+                }
+                else if(densite == 15.09 || densite <= 15.12){
+                    karat=15.90;
+                }
+                else if(densite == 15.13 || densite <= 15.16){
+                    karat=16.00;
+                }
+                else if(densite == 15.17 || densite <= 15.20){
+                    karat=16.10;
+                }
+                else if(densite == 15.21 || densite <= 15.25){
+                    karat=16.20;
+                }
+                else if(densite == 15.26 || densite <= 15.29){
+                    karat=16.30;
+                }
+                else if(densite == 15.30 || densite <= 15.33){
+                    karat=16.40;
+                }
+                else if(densite == 15.34 || densite <= 15.37){
+                    karat=16.50;
+                }
+                else if(densite == 15.38 || densite <= 15.42){
+                    karat=16.60;
+                }
+                else if(densite == 15.43 || densite <= 15.46){
+                    karat=16.70;
+                }
+                else if(densite == 15.47 || densite <= 15.50){
+                    karat=16.80;
+                }
+                else if(densite == 15.51 || densite <= 15.55){
+                    karat=16.90;
+                }
+                else if(densite == 15.56 || densite <= 15.59){
+                    karat=17.00;
+                }
+                else if(densite == 15.60 || densite <= 15.64){
+                    karat=17.10;
+                }
+                else if(densite == 15.65 || densite <= 15.68){
+                    karat=17.20;
+                }
+                else if(densite == 15.69 || densite <= 15.72){
+                    karat=17.30;
+                }
+                else if(densite == 15.73 || densite <= 15.77){
+                    karat=17.40;
+                }
+                else if(densite == 15.78 || densite <= 15.81){
+                    karat=17.50;
+                }
+                else if(densite == 15.82 || densite <= 15.86){
+                    karat=17.60;
+                }
+                else if(densite == 15.87 || densite <= 15.91){
+                    karat=17.70;
+                }
+                else if(densite == 15.92 || densite <= 15.95){
+                    karat=17.80;
+                }
+                else if(densite == 15.96 || densite <= 16.00){
+                    karat=17.90;
+                }
+                else if(densite == 16.01 || densite <= 16.04){
+                    karat=18.00;
+                }
+                else if(densite == 16.05 || densite <= 16.09){
+                    karat=18.10;
+                }
+                else if(densite == 16.10 || densite <= 16.14){
+                    karat=18.20;
+                }
+                else if(densite == 16.15 || densite <= 16.19){
+                    karat=18.30;
+                }
+                else if(densite == 16.20 || densite <= 16.23){
+                    karat=18.40;
+                }
+                else if(densite == 16.24 || densite <= 16.28){
+                    karat=18.50;
+                }
+                else if(densite == 16.29 || densite <= 16.33){
+                    karat=18.60;
+                }
+                else if(densite == 16.34 || densite <= 16.38){
+                    karat=18.70;
+                }
+                else if(densite == 16.39 || densite <= 16.43){
+                    karat=18.80;
+                }
+                else if(densite == 16.44 || densite <= 16.47){
+                    karat=18.90;
+                }
+                else if(densite == 16.48 || densite <= 16.52){
+                    karat=19.00;
+                }
+                else if(densite == 16.53 || densite <= 16.57){
+                    karat=19.10;
+                }
+                else if(densite == 16.58 || densite <= 16.62){
+                    karat=19.20;
+                }
+                else if(densite == 16.63 || densite <= 16.67){
+                    karat=19.30;
+                }
+                else if(densite == 16.68 || densite <= 16.72){
+                    karat=19.40;
+                }
+                else if(densite == 16.73 || densite <= 16.78){
+                    karat=19.50;
+                }
+                else if(densite == 16.79 || densite <= 16.83){
+                    karat=19.60;
+                }
+                else if(densite == 16.84 || densite <= 16.88){
+                    karat=19.70;
+                }
+                else if(densite == 16.89 || densite <= 16.93){
+                    karat=19.80;
+                }
+                else if(densite == 16.94 || densite <= 16.98){
+                    karat=19.90;
+                }
+                else if(densite == 16.99 || densite <= 17.03){
+                    karat=20.00;
+                }
+                else if(densite == 17.04 || densite <= 17.09){
+                    karat=20.10;
+                }
+                else if(densite == 17.10 || densite <= 17.14){
+                    karat=20.20;
+                }
+                else if(densite == 17.15 || densite <= 17.19){
+                    karat=20.30;
+                }
+                else if(densite == 17.20 || densite <= 17.25){
+                    karat=20.40;
+                }
+                else if(densite == 17.26 || densite <= 17.30){
+                    karat=20.50;
+                }
+                else if(densite == 17.31 || densite <= 17.35){
+                    karat=20.60;
+                }
+                else if(densite == 17.36 || densite <= 17.41){
+                    karat=20.70;
+                }
+                else if(densite == 17.42 || densite <= 17.46){
+                    karat=20.80;
+                }
+                else if(densite == 17.47 || densite <= 17.52){
+                    karat=20.90;
+                }
+                else if(densite == 17.53 || densite <= 17.58){
+                    karat=21.00;
+                }
+                else if(densite == 17.59 || densite <= 17.63){
+                    karat=21.10;
+                }
+                else if(densite == 17.64 || densite <= 17.69){
+                    karat=21.20;
+                }
+                else if(densite == 17.70 || densite <= 17.75){
+                    karat=21.30;
+                }
+                else if(densite == 17.76 || densite <= 17.80){
+                    karat=21.40;
+                }
+                else if(densite == 17.81 || densite <= 17.86){
+                    karat=21.50;
+                }
+                else if(densite == 17.87 || densite <= 17.92){
+                    karat=21.60;
+                }
+                else if(densite == 17.93 || densite <= 17.98){
+                    karat=21.70;
+                }
+                else if(densite == 17.99 || densite <= 18.04){
+                    karat=21.80;
+                }
+                else if(densite == 18.05 || densite <= 18.09){
+                    karat=21.90;
+                }
+                else if(densite == 18.10 || densite <= 18.15){
+                    karat=22.00;
+                }
+                else if(densite == 18.16 || densite <= 18.21){
+                    karat=22.10;
+                }
+                else if(densite == 18.22 || densite <= 18.27){
+                    karat=22.20;
+                }
+                else if(densite == 18.28 || densite <= 18.33){
+                    karat=22.30;
+                }
+                else if(densite == 18.34 || densite <= 18.40){
+                    karat=22.40;
+                }
+                else if(densite == 18.41 || densite <= 18.46){
+                    karat=22.50;
+                }
+                else if(densite == 18.47 || densite <= 18.52){
+                    karat=22.60;
+                }
+                else if(densite == 18.53 || densite <= 18.58){
+                    karat=22.70;
+                }
+                else if(densite == 18.59 || densite <= 18.64){
+                    karat=22.80;
+                }
+                else if(densite == 18.65 || densite <= 18.71){
+                    karat=22.90;
+                }
+                else if(densite == 18.72 || densite <= 18.77){
+                    karat=23.00;
+                }
+                else if(densite == 18.78 || densite <= 18.83){
+                    karat=23.10;
+                }
+                else if(densite == 18.84 || densite <= 18.90){
+                    karat=23.20;
+                }
+                else if(densite == 18.91 || densite <= 18.96){
+                    karat=23.30;
+                }
+                else if(densite == 18.97 || densite <= 19.03){
+                    karat=23.40;
+                }
+                else if(densite == 19.04 || densite <= 19.09){
+                    karat=23.50;
+                }
+                else if(densite == 19.10 || densite <= 18.16){
+                    karat=23.60;
+                }
+                else if(densite == 19.17 || densite <= 19.23){
+                    karat=23.70;
+                }
+                else if(densite == 19.24 || densite <= 19.26){
+                    karat=23.80;
+                }
+                else if(densite == 19.27 || densite <= 19.29){
+                    karat=23.90;
+                }
+                else if(densite == 30.00){
+                    karat=24.00;
+                }
+                else{
+                    karat="En attente";
+                }
+
+                
+                return karat;
+        }
+        
+        $().ready(function(){
+            function Print(){
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                $('#time').text(time);
+                return window.print();
+            }
+            $('#print').click(function(){
+                Print();
+            });
+           // console.log( "{{app.request.requesturi}}" );
+            $('#valid').click(function(){
+                $(this).hide();
+                $.ajax({
+                    url:"{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}",
+                    method:"POST",
+                    data:{valid:true},
+                    success:function(response)
+                    {
+                        console.log(response);
+                    }
+                })
+            });
+            number=$('#number').text();
+            $('#inletter').text('Arrêtée à la somme de: ' +NumberToLetter(number)+ ' FCFA');
+            fixed=$('#tofixed').text();
+            fixed=parseFloat(fixed).toFixed(2);
+            $('#tofixed').text(fixed);
+            $('#carat').text(getKarat(fixed));
+        });
+        
+    </script>
+{% endblock %}

@@ -1,0 +1,941 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') or is_granted('ROLE_HEADMASTER') %}
+        <section>
+            <!-- Intro Section StudentForm-->
+            <div class="modal fade" id="modalAgentForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
+                        <i class="fas fa-user-plus fa-2x mx-auto white-text"></i>
+                        <h4 class="modal-title col-md-12 font-weight-bold white-text mx-auto">Création de compte - Agent</h4>
+                        <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body mx-3">  
+                            <div class="container mask">
+                                {{ form_start(form) }}
+                                    <div class="mx-auto mb-3">
+                                        <div class="md-form col-md-8 mx-auto">
+                                            {{ form_row(form.fullname) }}
+                                        </div>  
+                                        <div class="md-form col-md-8 mx-auto">
+                                            {{ form_row(form.username) }}
+                                        </div>
+                                        <div class="md-form col-md-8 mx-auto">
+                                            {{ form_row(form.tel) }}
+                                        </div>  
+                                        <div class="md-form col-md-8 mx-auto">
+                                            {{ form_row(form.password.first) }}
+                                        </div>
+                                        <div class="md-form col-md-8 mx-auto">
+                                            {{ form_row(form.password.second) }}
+                                        </div>
+                                    
+                                        <div class="md-form col-md-8 mx-auto">
+                                            <select class="form-control" name="access" id="type">
+                                                <option>Choisissez le niveau d'accès</option>
+                                                {% if is_granted('ROLE_ADMIN') %}
+                                                    <option value="Admin">Administrateur</option>
+                                                {% endif %}
+                                                {# {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') %}
+                                                    <option value="Checker">Contrôleur</option>
+                                                {% endif %} #}
+                                                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') %}
+                                                    <option value="Headmaster">Chef d'agence</option>
+                                                {% endif %}
+                                                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') or is_granted('ROLE_HEADMASTER') %}
+                                                    <option value="Mod">Agent</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-8 mx-auto" style="display:none;" id="show">
+                                            {{ form_row(form.agency) }}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Valider</button> 
+                                    </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div> 
+            <!-- Intro Section --> 
+        </section>
+    {% endif %}
+    <section>
+        <!-- Intro Section StudentForm-->
+        <div class="modal fade" id="modalMdpForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
+                        <i class="fas fa-sync-alt fa-2x mx-auto white-text"></i> 
+                    <h4 class="modal-title font-weight-bold white-text mx-auto">Modification de Mot de passe</h4>
+                    <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                     <div class="modal-body mx-3">  
+                        <div class="container mask">
+                            {{ form_start(formpass) }}
+                                <div class="mx-auto mb-3">
+                                    <div class="md-form col-md-8 mx-auto">
+                                        {{ form_row(formpass.password.first) }}
+                                    </div>  
+                                    <div class="md-form col-md-8 mx-auto">
+                                        {{ form_row(formpass.password.second) }}
+                                    </div>  
+                                </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Modifier</button> 
+                                </div>
+                            {{ form_end(formpass) }}
+                        </div>
+                    </div>   
+                </div>
+            </div>
+        </div> 
+        <!-- Intro Section --> 
+    </section>
+    <section>
+        <!-- Intro Section StudentForm-->
+        <div class="modal fade" id="modalClientForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
+                        <i class="fas fa-user-plus fa-2x white-text mx-auto"></i> 
+                        <h4 class="modal-title font-weight-bold white-text mx-auto">Création de compte - Client</h4>
+                        <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">  
+                        <div class="container mask">
+                            {{ form_start(formclient) }}
+                                <div class="mx-auto mb-3">
+                                    <div class="md-form col-md-8 mx-auto">
+                                        {{ form_row(formclient.fullname) }}
+                                    </div>  
+                                    <div class="md-form col-md-8 mx-auto">
+                                        {{ form_row(formclient.tel) }}
+                                    </div>
+                                    <div class="col-md-8 mx-auto">
+                                        {{ form_row(formclient.agency) }}
+                                    </div>  
+                                </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Valider</button> 
+                                </div>
+                            {{ form_end(formclient) }}
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div> 
+        <!-- Intro Section --> 
+    </section>
+    {# <section>
+        <!-- Intro Section StudentForm-->
+        <div class="modal fade" id="modalReceveForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
+                        <i class="fas fa-money-check-alt fa-2x mx-auto white-text"></i> 
+                    <h4 class="modal-title font-weight-bold white-text mx-auto">Rétrait d'argent</h4>
+                    <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                     <div class="modal-body mx-3">  
+                        <div class="container mask">
+                            <form method="POST">
+                                <div class="mx-auto mb-3">
+                                    <div class="col-md-8 mx-auto">
+                                        <div class="md-form form-outline">
+                                            <input type="text" id="formTextExample1" class="form-control" name="secretid" aria-describedby="textExample1" data-mdb-showcounter="true" maxlength="10"/>
+                                            <label class="form-label" for="formTextExample1">Secret ID</label>
+                                            </div>
+                                            <div id="textExample1" class="form-text font-weight-bolder">
+                                                Entrez le code secret de rétrait d'argent.
+                                            </div>
+                                            <div class="md-form form-helper"></div>
+                                        </div>
+                                           
+                                    </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Vérifier</button> 
+                                </div>
+                            </form>
+                        </div>
+                    </div>   
+                </div>
+            </div>
+        </div> 
+        <!-- Intro Section --> 
+    </section> #}
+    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') %}
+        <section>
+            <!-- Intro Section StudentForm-->
+            <div class="modal fade" id="modalCaisseForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-center view view-cascade gradient-card-header blue-gradient">
+                            <i class="fas fa-user-plus fa-2x white-text mx-auto"></i> 
+                            <h4 class="modal-title font-weight-bold white-text mx-auto">Mise à jour - Caisse de la société</h4>
+                            <button type="button" class="close text-white font-weight-bold" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body mx-3">  
+                            <div class="container mask">
+                                {{ form_start(formcaisse) }}
+                                    <div class="mx-auto mb-3">
+                                        <div class="md-form col-md-8 mx-auto">
+                                              <select class="form-control md-form" name="" id="seletedCaisse">
+                                                <option disabled selected>Selectionnez la caisse</option>
+                                                <option value="FCFA">FCFA</option>
+                                                <option value="$">Dollar</option>
+                                                <option value="€">Euro</option>
+                                              </select>
+                                            </div>
+                                        </div>  
+                                        <div class="md-form col-md-8 mx-auto" id="upcaisse">
+                                            
+                                        </div>
+                                        <div class="md-form col-md-8 mx-auto" id="date">
+                                            <input type="datetime-local" class="md-form" name="date" id="" aria-describedby="helpId" placeholder="Date">
+                                            <small id="helpId" class="form-text text-muted font-weight-bold">Renseignez la date uniquement en cas d'oublie d'insertion précedente.</small>
+                                            </div>
+                                        </div>    
+                                    </div>
+                                    <div class="row">
+                                        <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Ajouter</button> 
+                                    </div>
+                                {{ form_end(formcaisse) }}
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div> 
+            <!-- Intro Section --> 
+        </section>
+    {% endif %}
+
+    <main class="mx-5" style="margin-top:50px!important; ">
+        <div class="container mb-4 bg-light">
+            <div class="row justify-content-center mx-auto">
+                <div class="">
+                    <a name="" id="" class="btn btn-primary btn-md btn-rounded font-weight-bold" href="{{ path('findetat') }}" role="button">Etat du jour</a>
+                </div>
+                {# <div class="">
+                    <a class="btn btn-indigo btn-md btn-rounded font-weight-bold" href="{{ path('operationlotdubai',{'transact':'Lot Dubai'}) }}">Caisse Dubai</a>
+                </div>
+                <div class="">
+                    <a class="btn blue-gradient btn-rounded btn-md font-weight-bold text-center mx-auto" href="{{ path('operationlot',{'transact': 'Lot' }) }}">Gold</a>
+                </div> #}
+                <div class="">
+                    <a class="btn btn-info btn-md btn-rounded font-weight-bold" href="{{ path('operationechange',{'transact':'FD'}) }}">Achat <i class="fas fa-arrow-alt-circle-right"></i> Dollar</a>
+                </div>
+                <div class="">
+                    <a class="btn btn-info btn-md btn-rounded font-weight-bold" href="{{ path('operationechange',{'transact':'FE'}) }}">Achat <i class="fas fa-arrow-alt-circle-right"></i> Euro</a>
+                </div>
+                <div class="">
+                    <a class="btn btn-secondary btn-md btn-rounded font-weight-bold" href="{{ path('operationechangef',{'transact':'DF'}) }}">Vente <i class="fas fa-arrow-alt-circle-right"></i> Dollar</a>
+                </div>
+                <div class="">
+                    <a class="btn btn-secondary btn-md btn-rounded font-weight-bold" href="{{ path('operationechangef',{'transact':'EF'}) }}">Vente <i class="fas fa-arrow-alt-circle-right"></i> Euro</a>
+                </div> 
+            </div>
+        </div>
+        <section class="card card-cascade narrower">
+            <div class="view view-cascade gradient-card-header indigo">
+                <div class="row justify-content-center text-center">
+                    <h5 class="mb-4 font-weight-bold">Que voulez-vous voir ?</h5>
+                </div>
+                <div class="row col-sm-12">
+                    <div class="mx-auto col-sm-12">
+                        <button type="button" class="btn btn-sm col-sm-6" id="candispo">Compte clients</button> 
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') or is_granted('ROLE_HEADMASTER') %}
+                            <button type="button" class="btn btn-sm col-sm-6" id="candiemp">Agents</button>
+                        {% endif %}
+                        {% if is_granted('ROLE_AGENT') or is_granted('ROLE_HEADMASTER') %}
+                            <button type="button" class="btn btn-sm col-sm-6" id="operation">Opérations en attente</button>
+                        {% endif %}
+                        <button type="button" class="btn btn-sm col-sm-6" id="facture">Opérations validées</button>
+                        {# <button type="button" class="btn btn-sm col-sm-6" id="transfert">Transferts</button>  #}
+                    </div>
+                </div>
+            </div>
+        </section>   
+        <div class="row mb-5">     
+            <div id="showcandispo" class="mx-auto text-center justify-content-center card-body card-body-cascade text-center table-responsive card" style="display:none">
+                <h4 class='mb-1'>Liste des clients</h4>
+                <table id="dtBasicExample" class="table align-center justify-content-center align-items-center">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Nom complet</th>
+                            <th class="th-sm">Pseudonyme</th>
+                            <th class="th-sm">N°tél</th>
+                            <th class="th-sm">Agence</th>
+                            <th class="th-sm">Solde</th>
+                            <th class="th-sm">Actions</th>
+                            <th class="th-sm">Opérations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in clients %}
+                            <tr>
+                                <td>{{user.fullname}}</td>
+                                <td>{{user.useridentifier}}</td>
+                                <td>{{user.tel}}</td>
+                                <td>{{user.agency}}</td>
+                                <td>
+                                    {% if user.solde %}
+                                        {{user.solde}}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('user_edit', {'id': user.id}) }}">Modif</a>
+                                    {{ include('user/_delete_form.html.twig') }}
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="">
+                                            <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('operation',{'id':user.id, 'type':user.type, 'transact': 'Achat' }) }}">Achat|Or</a>
+                                            <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('operation',{'id':user.id, 'type':user.type, 'transact': 'Vente' }) }}">Vente|Or</a>
+                                        </div>
+                                    </div>
+                                    {# <div class="row">
+                                        <div class="col-md-12">
+                                            <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold text-center mx-auto" href="{{ path('operationlot',{'id':user.id, 'type':user.type, 'transact': 'Lot' }) }}">Lot|Or</a>
+                                        </div>
+                                    </div> #}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a class="btn rgba-indigo-light btn-rounded btn-sm font-weight-bold" href="{{ path('operation', {'id':user.id, 'type':user.type, 'transact': 'Dépôt' }) }}">Dépôt</a>
+                                            <a class="btn rgba-indigo-light btn-rounded btn-sm font-weight-bold" href="{{ path('operation', {'id':user.id, 'type':user.type, 'transact': 'Rétrait' }) }}">Rétrait</a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class=" mx-auto">
+                                            {# <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('transfert',{'id':user.id,'cl':user.useridentifier}) }}">Transfert</a> #}
+                                            <a class="btn btn-warning btn-rounded btn-sm font-weight-bold" href="{{ path('user_show', {'id': user.id}) }}">Rapport</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') or is_granted('ROLE_HEADMASTER') %}
+            <div class="row mb-5">  
+                <div id="showcandiemp" class="mx-auto text-center justify-content-center card-body card-body-cascade text-center table-responsive col-lg-12 mx-auto col-md-auto col-sm-auto card" style="display:none">
+                    <h4 class='mb-1'>Liste des agents</h4>
+                    <table id="dt2" class="table justify-content-center align-items-center">
+                        <thead>
+                            <tr>
+                                <th class="th-sm">Nom Complet</th>
+                                <th class="th-sm">Pseudonyme</th>
+                                <th class="th-sm">N°tél</th>
+                                <th class="th-sm">Rôle</th>
+                                <th class="th-sm">Agence</th>
+                                <th class="th-sm">Status</th>
+                                <th class="th-sm">Actions</th>
+                                <th class="th-sm">Opérations</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in agents %}
+                            <tr>
+                                <td>{{user.fullname}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.tel}}</td>
+                                <td>
+                                    {% if user.type is same as ('Checker') %}
+                                        Contrôleur
+                                    {% elseif user.type is same as ('Agent') %}
+                                        Agent
+                                    {% elseif user.type is same as ('Headmaster') %}
+                                        Chef d'agence
+                                    {% elseif user.type is same as ('Administrateur') %}
+                                        Administrateur
+                                    {% endif %}
+                                    
+                                </td>
+                                <td>{{user.agency}}</td>
+                                <td id="isonline">
+                                    {% if user.isconnected %}
+                                        <h6><span class="text-black-50 font-weight-bold badge rounded-pill bg-success">Connecté</span></h6>
+                                    {% elseif not user.isconnected %}
+                                        <h6><span class="text-black-50 font-weight-bold badge rounded-pill bg-warning">Déconnecté</span></h6>
+                                    {% endif %}
+                                    
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('user_edit', {'id': user.id}) }}">Modif</a>
+                                    {{ include('user/_delete_form.html.twig') }}
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        {# <div class="col-md-12">
+                                            <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('operation',{'id':user.id, 'type':user.type, 'transact': 'Achat' }) }}">Achat</a>
+                                            <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('operation',{'id':user.id, 'type':user.type, 'transact': 'Vente' }) }}">Vente</a>
+                                        </div> #}
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a class="btn rgba-indigo-light btn-rounded btn-sm font-weight-bold" href="{{ path('operation', {'id':user.id, 'type':user.type, 'transact': 'Dépôt' }) }}">Dépôt</a>
+                                            <a class="btn rgba-indigo-light btn-rounded btn-sm font-weight-bold" href="{{ path('operation', {'id':user.id, 'type':user.type, 'transact': 'Rétrait' }) }}">Rétrait</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>  
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+        {% if is_granted('ROLE_AGENT') or is_granted('ROLE_HEADMASTER') %}
+         <div class="row">  
+            <div id="showoperation" class="mx-auto text-center card-body card-body-cascade text-center table-responsive col-lg-12 mx-auto col-md-auto col-sm-auto card" style="display:none">
+                <h4 class='mb-1'>Opérations en attente</h4>
+                <table id="dt3" class="table justify-content-center align-items-center">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Client</th>
+                            <th class="th-sm">Opération</th>
+                            <th class="th-sm">Base</th>
+                            <th class="th-sm">Date</th>
+                            <th class="th-sm">Heure</th>
+                            <th class="th-sm">Actions</th>
+                        </tr>
+                    </thead> 
+                </table>
+            </div>  
+         </div>
+        {% endif %}
+        <div class="row ">  
+            <div id="showfacture" class="mx-auto text-center card-body card-body-cascade text-center table-responsive col-lg-12 mx-auto col-md-auto col-sm-auto card" style="display:none">
+                <h4 class='mb-1'>Factures</h4>
+                <table id="dt4" class="table justify-content-center align-items-center">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Client</th>
+                            <th class="th-sm">N°</th>
+                            <th class="th-sm">Opération</th>
+                            <th class="th-sm">Base</th>
+                            <th class="th-sm">Montant</th>
+                            <th class="th-sm">Date | Heure</th>
+                            <th class="th-sm">Agence</th>
+                            <th class="th-sm">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for facture in factures %}
+                        <tr>
+                            {% if facture.client %}
+                            <td class="th-sm font-weight-bold">{{facture.client.fullname}}</td>
+                            {% elseif facture.tempclient %}
+                            <td class="th-sm font-weight-bold">{{facture.tempclient}}</td>
+                            {% else %}
+                            <td class="th-sm font-weight-bold">-</td>
+                            {% endif %}
+                            <td class="th-sm font-weight-bold">{{facture.numero}}</td>
+                            {% if facture.type is same as ("Achat") or facture.type is same as ("Vente") %}
+                                <td class="th-sm font-weight-bold">{{ facture.type is same as ("Achat") ? "Achat Or" : "Vente Or" }}</td>
+                            {% elseif facture.type is same as ('EF') or facture.type is same as ('DF') %}
+                                <td class="th-sm font-weight-bold">{{ facture.type is same as ("EF") ? "Vente €" : "Vente $" }}</td>
+                            {% elseif facture.type is same as ('FE') or facture.type is same as ('FD') %}
+                                <td class="th-sm font-weight-bold">{{ facture.type is same as ("FE") ? "Achat €" : "Achat $" }}</td>
+                            {% else %}
+                                <td class="th-sm font-weight-bold">{{ facture.type }}</td>   
+                            {% endif %}
+                            <td class="th-sm font-weight-bold">{{facture.base}}</td>
+                            <td class="th-sm font-weight-bold">{{facture.montant}}</td>
+                            <td class="th-sm font-weight-bold">{{facture.createdat|date('d-m-Y')}}|{{facture.time}}</td>
+                            <td class="th-sm font-weight-bold">{{facture.agency ? facture.agency:'-'}}</td>
+                            {% if facture.client and facture.type is not same as ('Lot') %}
+                                <td class="th-sm font-weight-bold">
+                                    <a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('showfacture',{'id':facture.client.id, 'type':facture.type, 'base': facture.base, 'date':facture.createdat|date('d-m-Y H:i:s'), 'numero':facture.numero }) }}">Voir</a>
+                                    {% if facture.type is same as ("Dépôt") or facture.type is same as ("Rétrait") %}
+                                        <a class="btn btn-outline-danger btn-rounded btn-sm" href="{{ path('dashboard',{'id':facture.id, 'type':facture.type, 'client':facture.client.id }) }}"><i class="fas fa-trash fa-1x"></i></a>
+                                    {% endif %}
+                                </td>
+                            {% elseif facture.type is same as ('Lot') and not facture.valid %}
+                                <td class="th-sm">
+                                    <div class="row">
+                                        <a class="btn btn-outline-warning btn-rounded btn-sm col-md-8" href="{{ path('facturationtemplot',{'type':facture.type, 'numero': facture.numero, 'see':true }) }}">Voir</a>
+                                        <a class="btn btn-outline-danger btn-rounded btn-sm col-md-8" href="{{ path('facturationtemplot',{'type':facture.type, 'numero': facture.numero, 'delete':true }) }}">Supp</a>
+                                        <a class="btn btn-outline-success btn-rounded btn-sm col-md-8" href="{{ path('validlot',{'id':true, 'type':facture.type, 'numero': facture.numero, 'valid':'Ok' }) }}">Vente</a>
+                                    </div>
+                                </td>
+                            {% elseif facture.tempclient and facture.type is same as ('Dépôt') or facture.type is same as ('Rétrait') %}
+                                <td class="th-sm">
+                                    <a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('showfacturetemp',{'id':facture.tempclient, 'type':facture.type, 'base': facture.base, 'date':facture.createdat|date('d-m-Y H:i:s'), 'numero':facture.numero }) }}">Voir</a>
+                                    <a class="btn btn-outline-danger btn-rounded btn-sm" href="{{ path('dashboard',{'id':facture.id, 'type':facture.type, 'client':facture.tempclient }) }}"><i class="fas fa-trash fa-1x"></i></a>
+                                </td>
+                
+                            {% elseif facture.type is same as ('Lot') and facture.valid %}
+                                <td class="th-sm"><a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('validlot',{'id':'id', 'type':facture.type, 'numero': facture.numero, 'see':'Ok' }) }}">Voir</a></td>
+                            {% elseif facture.type is same as ('Lot Dubai') and facture.valid %}
+                                <td class="th-sm"><a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('validlot',{'id':facture.tempclient, 'type':facture.type, 'numero': facture.numero, 'see':'Ok' }) }}">Voir</a></td>
+                            {% elseif facture.type is same as ("FD") and not facture.valid or facture.type is same as ("DF") and not facture.valid or facture.type is same as ("EF") and not facture.valid or facture.type is same as ("FE") and not facture.valid %}
+                                <td class="th-sm"><a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('showfacturetemp',{'id':facture.tempclient, 'type':facture.type, 'base': facture.base, 'date':facture.createdat|date('d-m-Y H:i:s'), 'numero':facture.numero }) }}">Voir</a></td>
+                                <td class="th-sm"><a class="btn btn-outline-primary btn-rounded btn-sm" href="{{ path('facturationechange',{'id':facture.tempclient, 'type':facture.type, 'date':facture.createdat|date('d-m-Y H:i:s'), 'newav':true, 'validated':false }) }}">New Av</a></td>
+                                <td class="th-sm"><a class="btn btn-outline-success btn-rounded btn-sm" href="{{ path('facturationechange',{'id':facture.tempclient, 'type':facture.type, 'date':facture.createdat|date('d-m-Y H:i:s'), 'validated':true }) }}">Valider</a></td>
+                            {% else %}
+                                <td class="th-sm">
+                                    <a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('showfacturetemp',{'id':facture.tempclient, 'type':facture.type, 'base': facture.base, 'date':facture.createdat|date('d-m-Y H:i:s'), 'numero':facture.numero }) }}">Voir</a>
+                                </td>
+                            
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody> 
+                </table>
+            </div>  
+        </div>
+        {# <div class="row ">  
+            <div id="showtransfert" class="mx-auto text-center card-body card-body-cascade text-center table-responsive col-lg-12 mx-auto col-md-auto col-sm-auto card" style="display:none">
+                <h4 class='mb-1'>Liste des Transferts</h4>
+                <table id="dt5" class="table justify-content-center align-items-center">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">N°</th>
+                            <th class="th-sm">Expéditeur</th>
+                            <th class="th-sm">Destinataire</th>
+                            <th class="th-sm">Agent dépôt</th>
+                            <th class="th-sm">Agent rétrait</th>
+                            <th class="th-sm">Agence de dépôt | rétrait</th>
+                            <th class="th-sm">Montant</th>
+                            <th class="th-sm">frais</th>
+                            <th class="th-sm">Date dépôt</th>
+                            <th class="th-sm">Date rétrait</th>
+                            <th class="th-sm">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for transfert in transferts %}
+                        <tr>
+                            <td class="th-sm">{{transfert.id}}</td>
+                            {% if transfert.client %}
+                                <td class="th-sm">{{transfert.client.fullname}}</td>
+                            {% else %}
+                                <td class="th-sm">{{transfert.destinateur}}</td>
+                            {% endif %}
+                            <td class="th-sm">{{transfert.destinataire}}</td>
+                            <td class="th-sm">{{transfert.agent}}</td>
+                            {% if transfert.transagent %}
+                                <td class="th-sm">{{transfert.transagent}}</td>
+                            {% else %}
+                                <td class="th-sm">-</td>
+                            {% endif %}
+                            {% if transfert.agency %}
+                                <td class="th-sm">{{transfert.agency}} | {{transfert.transagency}}</td>
+                            {% else %}
+                                <td class="th-sm">- | {{transfert.transagency}}</td>
+                            {% endif %}
+                            <td class="th-sm">{{transfert.montant}}</td>
+                            {% if transfert.frais %}
+                                <td class="th-sm">{{transfert.frais}}</td>
+                            {% else %}
+                                <td class="th-sm">-</td>
+                            {% endif %}
+                            <td class="th-sm">{{transfert.sentAt|date('d-m-Y H:i:s')}}</td>
+                            {% if transfert.receveAt %}
+                                <td class="th-sm">{{transfert.receveAt|date('d-m-Y H:i:s')}}</td>
+                            {% else %}
+                               <td class="th-sm">-</td>
+                            {% endif %}
+                            {% if transfert.facture %}
+                                <td class="th-sm"><a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('receved',{'id':transfert.id}) }}">Voir</a></td>
+                            {% else %}
+                                <td class="th-sm"><a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('sent',{'id':transfert.id}) }}">Voir</a></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody> 
+                </table>
+            </div>  
+        </div> #}
+           
+                
+        
+        <div class="alert-warning" role="alert" id="noData" style="display:none;">
+            <h4 class="alert-heading text center">Statut</h4>
+            <p>Vous n'avez pas encore de client.</p>
+        </div>  
+        <div class="alert-warning" role="alert" id="noDataR" style="display:none;">
+            <h4 class="alert-heading text center">Statut</h4>
+            <p>Vous n'avez pas d'agent.</p>
+        </div> 
+        <div class="alert-warning" role="alert" id="noDataOp" style="display:none;">
+            <h4 class="alert-heading text center">Statut</h4>
+            <p>Vous n'avez pas d'opération en attente de validation.</p>
+        </div>      
+        
+          {# <form>                  
+              <input type="checkbox" class="form-check-input" name="" id="" value="checkedValue" checked>
+          </form> #}
+                
+        
+    </main>
+
+{% endblock %}
+{% block ScriptP %}
+
+    <script>  
+        $(document).ready(function () {
+            
+            function formatDate(date) {
+                var d = new Date(date),
+                    month = '' + (d.getMonth() + 1),
+                    day = '' + d.getDate(),
+                    year = d.getFullYear();
+
+                if (month.length < 2) 
+                    month = '0' + month;
+                if (day.length < 2) 
+                    day = '0' + day;
+
+                return [year, month, day].join('-');
+            }
+            $('#seletedCaisse').change(function(){
+                selected = $(this).val();
+                if(selected === "FCFA"){
+                    $('#upcaisse').append($('#caisse_caisse').attr('hidden',false));
+                    $('#caisse_dollar').attr('hidden',true);
+                    $('#caisse_euro').attr('hidden',true);
+                }
+                else if(selected === "$"){
+                    $('#upcaisse').append($('#caisse_dollar').attr('hidden',false));
+                    $('#caisse_caisse').attr('hidden',true);
+                    $('#caisse_euro').attr('hidden',true);
+                }
+                else if(selected === "€"){
+                    $('#upcaisse').append($('#caisse_euro').attr('hidden',false));
+                    $('#caisse_caisse').attr('hidden',true);
+                    $('#caisse_dollar').attr('hidden',true);
+                }
+                else {
+                    return false;
+                }
+            });
+
+            $('#type').change(function(){
+                var type = $(this).val();
+                if(type=="Headmaster" || type=="Checker" || type=="Mod"){
+                console.log(type);
+                    $('#show').show( "fast" );
+                }else
+                    $('#show').hide( "fast" );
+            });
+          
+            tableOn=$('#dt2').DataTable({  
+                "bPaginate":true,
+                "bProcessing": true,
+                "responsive":true,
+                "pageLength": 5, 
+            });
+
+            tableOff=$('#dtBasicExample').DataTable({  
+                "bPaginate":true,
+                "bProcessing": true,
+                "responsive":true,
+                "pageLength": 5, 
+            });
+            tableTransfert=$('#dt5').DataTable({  
+                "bPaginate":true,
+                "bProcessing": true,
+                "responsive":true,
+                "pageLength": 5, 
+            });
+            var StopTableOff='';
+            var StopTableOn='';
+            var StopTableOp='';
+            
+            tableOp = $('#dt3').DataTable({
+                ajax:{
+                    url:"{{path('getoperations')}}",
+                    dataSrc:'',
+                },
+                "columns": 
+                [
+                    { data: 'fullname', 
+                        render: function(data, type, row, meta){
+                            if(data){
+                                return data;
+                            }else{
+                                return row.tempclient;
+                            }
+                        }
+                    },
+                    { data: 'type'},
+                    { data: 'base' },
+                    { data: 'created_at'},
+                    { data: 'time'},
+                    { data: 'facture',
+                        render: function(data, type, row, meta){
+                            if(row.client_id){
+                                PathTo="{{ path('facturation',{'id':'client_id', 'type':'typee', 'base':'basee', 'date':'created_at' }) }}";
+                                finalPath=PathTo.replace('client_id', row.client_id);
+                                b=finalPath.replace('typee', row.type);
+                                c=b.replace('basee',row.base);
+                                d=c.replace('created_at', row.created_at);
+                                
+                                UpTo="{{ path('updateoperation',{'id':'idd'}) }}";
+                                Update=UpTo.replace('idd',row.id);
+
+                                DelTo="{{ path('updateoperation',{'id':'idd', 'delete':'delete'}) }}";
+                                Delete=DelTo.replace('idd',row.id);
+                            }else{
+                                PathTo="{{ path('facturationtemp',{'id':'client_id', 'type':'typee', 'base':'basee', 'date':'created_at' }) }}";
+                                finalPath=PathTo.replace('client_id', row.tempclient);
+                                b=finalPath.replace('typee', row.type);
+                                c=b.replace('basee',row.base);
+                                d=c.replace('created_at', row.created_at);
+                                
+                                UpTo="{{ path('updateoperationtemp',{'id':'idd'}) }}";
+                                Update=UpTo.replace('idd',row.id);
+
+                                DelTo="{{ path('updateoperation',{'id':'idd', 'delete':'delete'}) }}";
+                                Delete=DelTo.replace('idd',row.id);
+                            }
+                            
+                            
+                            if(!data){
+                                link=
+                                '<a class="btn btn-outline-success btn-sm btn-rounded mr-2" href="'+d+'" role="button" id="confirm">'+'Facturer'+'</a>'+
+                                '<a class="btn btn-outline-warning btn-sm btn-rounded mr-2" href="'+Update+'" role="button">'+'Modifer'+'</a>'+
+                                '<a class="btn btn-outline-danger btn-sm btn-rounded" href="'+Delete+'" role="button">'+'Supprimer'+'</a>'
+                                ;
+                                return link;
+                            }//else{
+                                //link='<a class="btn btn-outline-success btn-sm btn-rounded" href="'+finalPath+'" role="button">'+'Facturer'+'</a>';
+                                //return link;  
+                            //}
+                        },
+                      
+                    },
+                ],    
+                
+                "bPaginate":true,
+                "bProcessing": true,
+                "responsive":true,
+                "pageLength": 5,
+            });
+
+            $('#candispo').click(function(){
+                $(this).hide('fast');     
+                if($('#showcandiemp').css('display',''))
+                {
+                    $('#showcandiemp').hide('fast');
+                    $('#showcandispo').show('fast');
+                    $('#candiemp').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+                if($('#showoperation').css('display',''))
+                {
+                    $('#showoperation').hide('fast');
+                    $('#showcandispo').show('fast');
+                    $('#operation').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+
+                if($('#showfacture').css('display',''))
+                {
+                    $('#showfacture').hide('fast');
+                    $('#showcandispo').show('fast');
+                    $('#facture').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+                if($('#showtransfert').css('display',''))
+                {
+                    $('#showtransfert').hide('fast');
+                    $('#showcandispo').show('fast');
+                    $('#transfert').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+                clearInterval(StopTableOp);
+                $('#showcandispo').show('fast');
+            });
+
+            $('#candiemp').click(function(){
+                $(this).hide('fast');
+                
+                if($('#showcandispo').css('display',''))
+                {
+                    $('#showcandispo').hide('fast');
+                    $('#showcandiemp').show('fast');
+                    $('#candispo').show('fast');
+                    clearInterval(StopTableOp);
+                }
+                if($('#showoperation').css('display',''))
+                {
+                    $('#showoperation').hide('fast');
+                    $('#showcandiemp').show('fast');
+                    $('#operation').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+                
+                if($('#showfacture').css('display',''))
+                {
+                    $('#showfacture').hide('fast');
+                    $('#showcandiemp').show('fast');
+                    $('#facture').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+                if($('#showtransfert').css('display',''))
+                {
+                    $('#showtransfert').hide('fast');
+                    $('#showcandiemp').show('fast');
+                    $('#transfert').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+
+                clearInterval(StopTableOp);
+                $('#showcandiemp').show('fast');
+            });
+
+            $('#operation').click(function(){
+                $(this).hide('fast');
+                
+                if($('#showcandispo').css('display',''))
+                {
+                    $('#showcandispo').hide('fast');
+                    $('#showoperation').show('fast');
+                    $('#candispo').show('fast');
+                }
+                if($('#showcandiemp').css('display',''))
+                {
+                    $('#showcandiemp').hide('fast');
+                    $('#showoperation').show('fast');
+                    $('#candiemp').show('fast');
+                } 
+                 if($('#showfacture').css('display',''))
+                {
+                    $('#showfacture').hide('fast');
+                    $('#showoperation').show('fast');
+                    $('#facture').show('fast');
+                }
+                if($('#showtransfert').css('display',''))
+                {
+                    $('#showtransfert').hide('fast');
+                    $('#showoperation').show('fast');
+                    $('#transfert').show('fast');
+                } 
+                StopTableOff=setInterval(function(){
+                                tableOp.ajax.reload(null,false);
+                            }, 30000);
+                
+                $('#showoperation').show('fast');
+            });
+
+            $('#facture').click(function(){
+                $(this).hide('fast');
+                
+                if($('#showcandispo').css('display',''))
+                {
+                    $('#showcandispo').hide('fast');
+                    $('#showfacture').show('fast');
+                    $('#candispo').show('fast');
+                }
+                if($('#showcandiemp').css('display',''))
+                {
+                    $('#showcandiemp').hide('fast');
+                    $('#showfacture').show('fast');
+                    $('#candiemp').show('fast');
+                } 
+                 if($('#showoperation').css('display',''))
+                {
+                    $('#showoperation').hide('fast');
+                    $('#showfacture').show('fast');
+                    $('#operation').show('fast');
+                }
+                if($('#showtransfert').css('display',''))
+                {
+                    $('#showtransfert').hide('fast');
+                    $('#showfacture').show('fast');
+                    $('#transfert').show('fast');
+                    clearInterval(StopTableOp);
+                } 
+                
+                $('#showfacture').show('fast');
+            });
+
+            $('#transfert').click(function(){
+                $(this).hide('fast');
+                
+                if($('#showcandispo').css('display',''))
+                {
+                    $('#showcandispo').hide('fast');
+                    $('#showfacture').show('fast');
+                    $('#candispo').show('fast');
+                }
+                if($('#showcandiemp').css('display',''))
+                {
+                    $('#showcandiemp').hide('fast');
+                    $('#showfacture').show('fast');
+                    $('#candiemp').show('fast');
+                } 
+                 if($('#showoperation').css('display',''))
+                {
+                    $('#showoperation').hide('fast');
+                    $('#showfacture').show('fast');
+                    $('#operation').show('fast');
+                }
+                if($('#showfacture').css('display',''))
+                {
+                    $('#showfacture').hide('fast');
+                    $('#showtransfert').show('fast');
+                    $('#facture').show('fast');
+                } 
+                
+                $('#showtransfert').show('fast');
+            });
+            
+            tableOn = $('#dt4').DataTable({
+                    
+                "bPaginate":true,
+                "bProcessing": true,
+                "responsive":true,
+                "pageLength": 5,
+            });
+            
+            $('.dataTables_length').addClass('bs-select');
+            $('#dtBasicExample').on( 'draw.dt', function(){
+                if (! tableOff.data().any() ) {
+                    $('#noData').show('fast');
+                }
+            });
+
+            $('#dt2').on( 'draw.dt', function(){
+                if (! tableOn.data().any() ) {
+                    $('#noDataR').show('fast');
+                }
+            });
+            $('#dt3').on( 'draw.dt', function(){
+                if (! tableOp.data().any() ) {
+                    $('#noDataOp').show('fast');
+                }
+            });
+             
+            
+      
+            
+        });
+    </script> 
+{% endblock %}

@@ -1,0 +1,290 @@
+{% extends "base.html.twig" %}
+{% block print %}
+    <link rel="stylesheet" media="print" href="{{ asset('./assets/css/print.css') }}" />
+{% endblock %}
+{% block body %}
+    <section class="container card" style="margin-top:40px!important;">
+        {% for society in society %} 
+            <div class="row mask">
+                {% if society.logo %}
+                <div class="col-md-12">
+                    <div class="justify-content-center align-items-center mx-auto my-auto text-center">
+                        <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-12">
+                     <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
+                </div>
+                <div class="row mx-auto">
+                    <div class="col-md-12 mx-auto">
+                        <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.email }}</h5>
+                    </div>
+                    <div class="col-md-12 mx-auto text-center">
+                        <h5 class="text-center font-weight-bold"> {% if app.user.agency %} {{ app.user.agency.tel }} {% else %} {{ society.tel }} {% endif %}</h5>
+                        <code class="font-weight-bold font-italic text-center justify-content-center align-center">Votre Satisfation, notre engagement!</code>
+                    </div>
+                    <div class="col-md-12 mx-auto rounded">
+                        {% if app.user.agency %}
+                            <h5 class="text-center font-weight-bold border rounded-sm border-warning" style=""> <u>Agence</u>: {{ client.agency }} </h5>
+                        {% endif %}
+                        <h5 class="text-center font-weight-bold border rounded-sm border-warning" style=""> <u>Par</u>: {{ agent }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row mask blue-gradient">
+            <h1 class="mx-auto font-weight-bold white-text">
+                {% if 'DF' in type %}
+                    Echange <i class="fas fa-arrow-alt-circle-right"></i> Dollar - N° {{numero}}
+                {% elseif 'EF' in type %}
+                    Echange <i class="fas fa-arrow-alt-circle-right"></i> Euro - N° {{numero}}
+                {% elseif 'FD' in type %}
+                    FCFA <i class="fas fa-arrow-alt-circle-right"></i> Dollar - N° {{numero}}
+                {% elseif 'FE' in type %}
+                    FCFA <i class="fas fa-arrow-alt-circle-right"></i> Euro - N° {{numero}}
+                {% endif %}
+            </h1>
+        </div>
+        <div class="row mask">
+            <h3 class="mx-auto font-weight-bolder pr-0 col-md-12"> <u>Compte client</u>: {{client.tempclient}}</h3>
+            <h3 class="mx-auto font-weight-bolder pr-0 col-md-12"> <u>Tel</u>: {{client.tel}}</h3>
+            {% if client.motif %}
+                <h3 class="mx-auto font-weight-bolder pr-0 col-md-12"> <u>Motif</u>: {{client.motif}}</h3>
+            {% endif %}
+            <div class="row text-black-50 mx-auto">
+                <div class="col-md-12 mx-auto">
+                    <h5 class="font-weight-bold"> {% if app.user.agency %}{{app.user.agency}}{% endif %}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="row font-weight-bold text-black-50 col-md-12 ">
+            <div class="col-md-6"> {{date|date('d - m - Y')}} | 
+                <span class="time"></span>
+            </div>
+            {% if newav or validated %}
+                <div class="col-md-3 font-weight-bold text-bold md-form"> 
+                    <input type="text" class="md-form form-control" placeholder="Nouvelle avance" id="newav">
+                </div>
+            {% endif %}
+        </div>
+        <div class="container">
+            <table class="table text-center align-items-center table-bordered table-hover  table-responsive-sm table-responsive-md">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="font-weight-bold">Date</th>
+                        <th class="font-weight-bold">Montant</th>
+                        <th class="font-weight-bold">Taux</th>
+                        <th class="font-weight-bold">Total</th>
+                        {% if avance %}
+                            <th class="font-weight-bold">Avance</th>
+                            <th class="font-weight-bold">Reliquat</th>
+                        {% endif %}  
+                    </tr>
+                </thead>
+                <tbody class="text-bold">
+                    {% for operation in operations %}
+                    <tr>
+                        <td class="font-weight-bolder" style="font-size:16px!important;">
+                            {{ operation.createdat|date('d-m-Y')}} {{operation.time}}
+                            {% if newav is same as true or validated  %}
+                                <a role="button" href="{{ path('updateoperationlotdubai',{'id':operation.id, 'delete':true}) }}"><i class="fas fa-trash text-danger"></i></a>
+                            {% endif %}
+                        </td>
+                        <td class="font-weight-bolder" style="font-size:16px!important;">
+                            {{ operation.montant|number_format(0, ' ', ' ') }}
+                        </td>
+                        <td class="font-weight-bolder" style="font-size:16px!important;">{{ operation.taux }}</td>
+                        <td class="font-weight-bolder" style="font-size:16px!important;" id="number">{{ operation.totalm|number_format(0, ' ', ' ') }}</td>
+                        {% if avance %}
+                            <td class="font-weight-bolder res" style="font-size:16px!important;">{{ operation.avance|number_format(0, ' ', ' ') }}</td>
+                            <td class="font-weight-bolder newreliquat" style="font-size:16px!important;" id="reliquat">{{ operation.total }}</td>
+                        {% endif %}  
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h5 class="font-weight-bolder border-info m-0 p-0 inletter text-capitalize"  style="font-size:16px!important;"></h5>
+        </div>
+        <div class="container">
+            <div class="row text-center justify-content-center">
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Gérant</u>:</h3>
+                </div>
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Comptable</u>:</h3>
+                </div>
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Client</u>:</h3>
+                </div>
+            </div>
+        </div>
+        <hr style="border: 3px solid #ccc; ">
+        {% for society in society %} 
+            <div class="row mask">
+                {% if society.logo %}
+                <div class="col-md-12">
+                    <div class="justify-content-center align-items-center mx-auto my-auto text-center">
+                        <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-12">
+                     <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
+                </div>
+                <div class="row mx-auto">
+                    <div class="col-md-12 mx-auto">
+                        <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ app.user.agency ? app.user.agency.email : society.email }}</h5>
+                    </div>
+                    <div class="col-md-12 mx-auto text-center">
+                        <h5 class="text-center font-weight-bold"> {% if app.user.agency %} {{ app.user.agency.tel }} {% else %} {{ society.tel }} {% endif %}</h5>
+                        <code class="font-weight-bold font-italic text-center justify-content-center align-center">Votre Satisfation, notre engagement!</code>
+                    </div>
+                    <div class="col-md-12 mx-auto rounded">
+                        {% if app.user.agency %}
+                            <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Agence</u>: {{ client.agency }} </h5>
+                        {% endif %}
+                        <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Par</u>: {{ agent }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row mask blue-gradient">
+            <h1 class="mx-auto font-weight-bold white-text">
+                {% if 'DF' in type %}
+                    Echange <i class="fas fa-arrow-alt-circle-right"></i> Dollar - N° {{numero}}
+                {% elseif 'EF' in type %}
+                    Echange <i class="fas fa-arrow-alt-circle-right"></i> Euro - N° {{numero}}
+                {% elseif 'FD' in type %}
+                    FCFA <i class="fas fa-arrow-alt-circle-right"></i> Dollar - N° {{numero}}
+                {% else %}
+                    FCFA <i class="fas fa-arrow-alt-circle-right"></i> Euro - N° {{numero}}
+                {% endif %}
+            </h1>
+        </div>
+        <div class="row mask">
+            <h3 class="mx-auto font-weight-bolder pr-0 col-md-12"> <u>Compte client</u>: {{client.tempclient}}</h3>
+            <h3 class="mx-auto font-weight-bolder pr-0 col-md-12"> <u>Tel</u>: {{client.tel}}</h3>
+            {% if client.motif %}
+                <h3 class="mx-auto font-weight-bolder pr-0 col-md-12"> <u>Motif</u>: {{client.motif}}</h3>
+            {% endif %}
+            <div class="row text-black-50 mx-auto">
+                <div class="col-md-12 mx-auto">
+                    <h5 class="font-weight-bold"> {% if app.user.agency %}{{app.user.agency}}{% endif %}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="row font-weight-bold text-black-50 col-md-12">
+            <div class="col-md-6"> {{date|date('d - m - Y')}} | 
+                <span class="time"></span>
+            </div>
+        </div>
+        <div class="container">
+            <table class="table text-center align-items-center table-bordered table-hover  table-responsive-sm table-responsive-md">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="font-weight-bold">Date</th>
+                        <th class="font-weight-bold">Montant</th>
+                        <th class="font-weight-bold">Taux</th>
+                        <th class="font-weight-bold">Total</th>
+                        {% if avance %}
+                            <th class="font-weight-bold">Avance</th>
+                            <th class="font-weight-bold">Reliquat</th>
+                        {% endif %}  
+                    </tr>
+                </thead>
+                <tbody class="text-bold">
+                    {% for operation in operations %}
+                    <tr>
+                        <td class="font-weight-bolder" style="font-size:16px!important;">{{ operation.createdat|date('d-m-Y')}} {{operation.time}}</td>
+                        <td class="font-weight-bolder" style="font-size:16px!important;">
+                            {{ operation.montant|number_format(0, ' ', ' ') }}
+                        </td>
+                        <td class="font-weight-bolder" style="font-size:16px!important;">{{ operation.taux }}</td>
+                        <td class="font-weight-bolder" style="font-size:16px!important;" id="number">{{ operation.totalm|number_format(0, ' ', ' ') }}</td>
+                        {% if avance %}
+                            <td class="font-weight-bolder res" style="font-size:16px!important;">{{ operation.avance|number_format(0, ' ', ' ') }}</td>
+                            <td class="font-weight-bolder newreliquat" style="font-size:16px!important;">{{ operation.total }}</td>
+                        {% endif %}  
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h5 class="font-weight-bolder border-info m-0 p-0 inletter text-capitalize"  style="font-size:16px!important;"></h5>
+        </div>
+        <div class="container">
+            <div class="row text-center justify-content-center">
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Gérant</u>:</h3>
+                </div>
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Comptable</u>:</h3>
+                </div>
+                <div class="col-md-4 font-weight-bolder">
+                    <h3><u>Client</u>:</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row mx-auto">
+        {% if not valid %}
+                <button id="valid" type="button" class="btn btn-rounded btn-outline-success btn-md mx-auto text-center">Valider</button>
+        {% endif %}
+            <a name="" id="print" class="btn btn-rounded btn-lg btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
+        </div>
+    </section>
+{% endblock %}
+{% block ScriptP %}
+    <script>
+        $().ready(function(){
+            function Print(){
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                $('.time').text(time);
+                return window.print();
+            }
+            $('#print').click(function(){
+                Print();
+            });
+        });
+        var newavance = 0;
+        var newreliquat = 0;
+        var validated = {{validated}};
+        $("#newav").change(function(){
+            newavance = $(this).val();
+            if(newavance){
+                var reliquat = parseInt($('#reliquat').text());
+                newreliquat=reliquat - newavance;
+                $('.newreliquat').text(parseFloat(newreliquat).toFixed(2));
+            }
+        });
+        
+        console.log(validated);
+        $('#valid').click(function(){
+            console.log(validated);
+            $(this).hide();
+            $.ajax({
+                url:"{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}",
+                method:"POST",
+                data:{
+                    valid:true, 
+                    reliquat: newreliquat, 
+                    newavance,
+                    validated,
+                    
+                },
+                success:function(response)
+                {
+                    
+                    if (response) $('.res').text(response)
+                }
+            })
+        });
+        
+        number=$('#number').text();
+        $('.inletter').text('Arrêtée à la somme de:' +NumberToLetter(number));
+    </script>
+{% endblock %}

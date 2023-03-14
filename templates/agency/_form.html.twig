@@ -1,0 +1,8 @@
+<div class="container justify-content-center">
+    <div class="col-md-8 mx-auto md-form">    
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-outline-primary btn-rounded">{{ button_label|default('Ajouter') }}</button>
+    {{ form_end(form) }}
+    </div>
+</div>

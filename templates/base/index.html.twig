@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <section class="container card" style="margin-top:50px!important;">
+        <div class="row mask blue-gradient">
+            <h1 class="mx-auto">Bienvenue sur <b class="yellow-text">EasyGold</b></h1>
+        </div>
+        <div class="row mask mt-5 mb-3">
+            <h4 class="mx-auto font-weight-normal">Renseignez les informations de votre société</h4>
+        </div>
+        <div class="container mask">
+            {{ form_start(form) }}
+            <div class="row justify-content-center">
+                <div class="md-form col-md-8 mx-auto">
+                    {{ form_row(form.name) }}
+                </div>  
+                <div class="md-form col-md-8 mx-auto">
+                    {{ form_row(form.caisse) }}
+                </div>
+                <div class="md-form col-md-8 mx-auto">
+                    {{ form_row(form.job) }}
+                </div>
+                <div class="md-form col-md-8 mx-auto">
+                    {{ form_row(form.description) }}
+                </div>
+                <div class="md-form col-md-8 mx-auto">
+                    {{ form_row(form.email) }}
+                </div>
+                <div class="md-form col-md-8 mx-auto">
+                    {{ form_row(form.tel) }}
+                </div>
+                <div class="col-md-8 mx-auto">
+                    {{ form_row(form.logo) }}
+                </div>
+            </div>
+                <div class="row">
+                    <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Enregistrer</button> 
+                </div>
+            
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}
+{% block header %}
+{% endblock %}

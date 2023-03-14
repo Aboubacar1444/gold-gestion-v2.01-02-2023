@@ -1,0 +1,153 @@
+{% extends "base.html.twig" %}
+{% block print %}
+    <link rel="stylesheet" media="print" href="{{ asset('./assets/css/print.css') }}" />
+{% endblock %}
+{% block body %}
+    <section class="container card" style="margin-top:40px!important;">
+        {% for society in society %}     
+            <div class="row mask">
+                {% if society.logo %}
+                <div class="col-md-12 mb-5">
+                    <div class="justify-content-center align-items-center mx-auto my-auto text-center">
+                        <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-12">
+                     <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
+                </div>
+                <div class="row mx-auto">
+                    <div class="col-md-12 mx-auto mb-1">
+                        <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.tel }}</h5>
+                        <h5 class="text-center font-weight-bold font-italic"><code class="">Votre Satisfation, notre engagement!</code></h5>
+                    </div>
+                    
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row mask aqua-gradient-rgba mt-3">
+            <h1 class="mx-auto font-weight-bold white-text"> {{"Dépôt"in type ? "Versement": type}} - N° {{numero}}</h1>
+        </div>
+        <div class="row mask mt-2">
+            <div class="row mask mt-1 mb-1">
+                <div class="row mask mt-3 mx-auto text-center">
+                    <h3 class="font-weight-bolder pt-3 pr-0 col-md-12"> <u>Client</u>: {{recu.tempclient}}</h3>
+                    <h3 class="font-weight-bolder pt-3 pr-0 col-md-12"> <u>N°Tél</u>: {{recu.tel}}</h3>
+                </div>
+            </div>
+        </div>
+            <div class="font-weight-bold text-black-50 mx-auto mt-1">
+                <div class="col-md-12"> {{date|date('d - m - Y')}} | 
+                    <span id="">{{ recu.time }}</span>
+                </div>
+            </div>
+            <div class="container mt-3">
+                <div class="row mx-auto">
+                    <div class="col-md-8 mx-auto">
+                        <h3>Montant: <span id="number" class="font-weight-bold"> {{ recu.montant|number_format(0,' ',' ') }}</span> FCFA</h3>
+                    </div>
+                    <div class="col-md-12 mx-auto mt-3">
+                        <h5><span id="" class="font-weight-bold inletter"></span></h5>
+                    </div>
+                    <div class="col-md-12 mx-auto mt-3">
+                        <h5><span class="font-weight-bold">Motif: {{recu.motif}}</span></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="container mt-5" style="margin-bottom:50px!important;">
+                <div class="row justify-content-center text-center">
+                    <div class="col-md-5 font-weight-bolder">
+                        <h3><u>Client</u>:</h3>
+                    </div>
+                    <div class="col-md-5 font-weight-bolder">
+                        <h3><u>Caissier</u>:</h3>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-5 font-weight-bold" style="border: 2px solid #ccc "/>
+            {% for society in society %}
+                <div class="row mask" style="margin-top:75px;">
+                    {% if society.logo %}
+                    <div class="col-md-12 mb-2">
+                        <div class="justify-content-center align-items-center mx-auto my-auto text-center">
+                            <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-12">
+                        <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
+                    </div>
+                    <div class="row mx-auto">
+                        <div class="col-md-12 mx-auto mb-1">
+                            <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
+                            <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
+                            <h5 class="text-center font-weight-bold"> {{ society.tel }}</h5>
+                            <h5 class="text-center font-weight-bold font-italic"><code class="">Votre Satisfation, notre engagement!</code></h5>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="row mask aqua-gradient-rgba mt-3">
+                <h1 class="mx-auto font-weight-bold white-text"> {{"Dépôt"in type ? "Versement": type}} - N° {{numero}}</h1>
+            </div>
+            <div class="row mask mt-2">
+                <div class="row mask mt-1 mb-1">
+                    <div class="row mask mt-3 mx-auto text-center">
+                        <h3 class="font-weight-bolder pt-3 pr-0 col-md-12"> <u>Client</u>: {{recu.tempclient}}</h3>
+                        <h3 class="font-weight-bolder pt-3 pr-0 col-md-12"> <u>N°Tél</u>: {{recu.tel}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="font-weight-bold text-black-50 mx-auto  mt-1">
+                <div class="col-md-12"> {{date|date('d - m - Y')}} | 
+                    <span id="">{{ recu.time }}</span>
+                </div>
+            </div>
+            <div class="container mt-3">
+                <div class="row mx-auto">
+                    <div class="col-md-8 mx-auto">
+                        <h3>Montant: <span id="number" class="font-weight-bold"> {{ recu.montant|number_format(0,' ',' ') }}</span> FCFA</h3>
+                    </div>
+                    <div class="col-md-12 mx-auto mt-3">
+                        <h5><span id="" class="font-weight-bold inletter"></span></h5>
+                    </div>
+                    <div class="col-md-12 mx-auto mt-3">
+                        <h5><span class="font-weight-bold">Motif: {{recu.motif}}</span></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="container mt-3">
+                <div class="row justify-content-center text-center">
+                    <div class="col-md-5 font-weight-bolder">
+                        <h3><u>Client</u>:</h3>
+                    </div>
+                    <div class="col-md-5 font-weight-bolder">
+                        <h3><u>Caissier</u>:</h3>
+                    </div>
+                </div>
+                
+            </div>
+        <div class="row mx-auto">
+            <a name="" id="print" class="btn btn-rounded btn-lg btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
+        </div>
+    </section>
+{% endblock %}
+{% block ScriptP %}
+    <script>
+        $().ready(function(){
+            function Print(){
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                $('#time').text(time);
+                return window.print();
+            }
+            $('#print').click(function(){
+                Print();
+            });
+        });
+        number=$('#number').text();
+        $('.inletter').text('Arrêtée à la somme de: ' +NumberToLetter(number)+ ' FCFA');
+    </script>
+{% endblock %}

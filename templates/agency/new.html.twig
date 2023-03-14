@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container justify-content-center text-bold text-center mt-5">
+        <h1>Création - nouvelle agence</h1>
+            {{ include('agency/_form.html.twig') }}
+        <a href="{{ path('agency_index') }}">Retour à la liste</a>
+    </div>
+{% endblock %}

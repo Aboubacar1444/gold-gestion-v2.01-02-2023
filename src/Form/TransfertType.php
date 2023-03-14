@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Transfert;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class TransfertType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('montant', NumberType::class,[
+                'label'=>false,
+                'attr'=>[
+                    'placeholder'=>'Montant à envoyé',
+                    'class'=>'',
+                ]
+            ])
+            ->add('frais', NumberType::class,[
+                'label'=>false,
+                'attr'=>[
+                    'placeholder'=>"Frais d'envoi",
+                    'class'=>'md-form',
+                ],
+                'required'=>false,
+            ])
+            ->add('tel', TextType::class,[
+                'label'=>false,
+                'attr'=>[
+                    'placeholder'=>'Numéro de téléphone',
+                    'class'=>'md-form',
+                ]
+            ])
+            ->add('telsender', TextType::class,[
+                'label'=>false,
+                'attr'=>[
+                    'placeholder'=>'Numéro de téléphone',
+                    'class'=>'md-form',
+                ],
+                'required'=>false,
+            ])
+            ->add('destinataire', TextType::class,[
+                'label'=>false,
+                'attr'=>[
+                    'placeholder'=>'Nom & prénom',
+                    'class'=>'md-form',
+                ]
+            ])
+            ->add('destinateur', TextType::class,[
+                'label'=>false,
+                'attr'=>[
+                    'placeholder'=>'Nom & prénom',
+                    'class'=>'md-form',
+                ]
+            ])
+            ->add('transagency', EntityType::class,[
+                'class'=>"App\Entity\Agency",
+                'required'=>true,
+                'attr'=>[
+                    'class'=>"md-form"
+                ],
+                'placeholder'=>"Choisissez l'agence de réception",
+                'label'=>false,
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Transfert::class,
+        ]);
+    }
+}

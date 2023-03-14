@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+{# {% block body %}
+<form method="post">
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <label for="inputUsername">Username</label>
+    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+    <label for="inputPassword">Password</label>
+    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+    <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}"
+    >
+
+    
+        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+        See https://symfony.com/doc/current/security/remember_me.html
+
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" name="_remember_me"> Remember me
+            </label>
+        </div>
+   
+
+    <button class="btn btn-lg btn-primary" type="submit">
+        Sign in
+    </button>
+</form>
+{% endblock %} #}
+{% block body %}
+    <section class="container card" style="margin-top:75px!important;">
+        <div class="row mask blue-gradient">
+            <h1 class="mx-auto white-text">Connexion</b></h1>
+        </div>
+        <div class="row mask mt-5 mb-3">
+            <div class="text-center col-md-8 mb-3 mx-auto">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success alert-dismissible fade show justify-content-center" role="alert">
+                        <strong> {{ message }} </strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+                {% for messagee in app.flashes('error') %}
+                    <div class="alert alert-danger alert-dismissible fade show justify-content-center" role="alert">
+                        <strong> {{ messagee }} </strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+            <i class="fas fa-sign-in-alt fa-4x blue-text col-md-12 text-center"></i>
+        </div>
+        <div class="container mask">
+            <form method="post">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <div class="row py-3 justify-content-center">
+                    <div class="md-form col-md-8 mx-auto py-3">
+                        <input type="text" value="{{ last_username }}" name="username" id="inputUsername" placeholder="Pseudo de connexion" class="md-form form-control" autocomplete="username" required autofocus>
+                    </div> 
+                    <div class="md-form col-md-8 mx-auto ">
+                        <input type="password" name="password" id="inputPassword" class="md-form form-control" placeholder="Mot de passe" autocomplete="current-password" required>    
+                    </div> 
+                    <div class="form-check col-md-8 mx-auto justify-content-center">
+                        <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me" checked/>
+                        <label for="remember_me" class="form-check-label">Se souvenir de moi</label>
+                    </div>  
+
+                    <input type="hidden" name="_csrf_token"
+                        value="{{ csrf_token('authenticate') }}"
+                    >
+                </div>
+
+                <div class="row pb-5">
+                    <button type="submit" class="btn blue-gradient btn-rounded font-weight-bold mx-auto">Connexion</button> 
+                </div>
+            </form>
+        </div>
+    </section>
+
+{% endblock %}
+{% block header %}{% endblock %}

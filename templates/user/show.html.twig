@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+{% block print %}
+    <link rel="stylesheet" media="print" href="{{ asset('./assets/css/print.css') }}" />
+{% endblock %}
+{% block body %}
+    <div class="container justify-content-center text-bold text-center mt-5 card">
+        {% for society in society %} 
+            <div class="row mask mb-3">
+                {% if society.logo %}
+                <div class="col-md-12 mb-2">
+                    <div class="justify-content-center align-items-center mx-auto my-auto text-center">
+                        <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-12">
+                    <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
+                </div>
+                <div class="row mx-auto">
+                    <div class="col-md-12 mx-auto mb-1">
+                        <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ app.user.agency ? app.user.agency.email : society.email }}</h5>
+                    </div>
+                    <div class="col-md-12 mx-auto text-center">
+                        <h5 class="text-center font-weight-bold"> {% if app.user.agency %} {{ app.user.agency.tel }} {% else %} {{ society.tel }} {% endif %}</h5>
+                        <code class="font-weight-bold font-italic mt-1 text-center justify-content-center align-center">Votre Satisfation, notre engagement!</code>
+                    </div>
+                    <div class="col-md-12 mx-auto rounded">
+                    {% if app.user.agency %}
+                        <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Agence</u>: {{ app.user.agency.name }} </h5>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+        <h1 class="aqua-gradient-rgba font-weight-bold mask text-white">Rapport</h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Client</th>
+                    <td>{{ user.fullname }}</td>
+                </tr>
+                <tr>
+                    <th>N° Tél</th>
+                    <td>{{ user.tel }}</td>
+                </tr>
+                <tr>
+                    <th>Solde</th>
+                    <td>{{ user.solde }}</td>
+                </tr>
+                <tr>
+                    <th>Par</th>
+                    <td>{{ app.user.useridentifier }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <h2><u>Suivi</u></h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Opération</th>
+                    <th>Motif</th>
+                    <th>Montant</th>
+                    <th>Date | Heure</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for op in user.getoperations %}
+                <tr>
+                    <td>{{ op.numero }}</td>
+                    <td>{{ op.type }}</td>
+                    <td>{{ op.motif }}</td>
+                    <td>{{ op.montant }}</td>
+                    <td>{{ op.createdAt|date('d-m-Y') }} | {{ op.time }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="row mx-auto">
+            <a name="" id="print" class="btn btn-rounded btn-lg btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
+        </div>
+    </div>
+{% endblock %}
+{% block ScriptP %}
+    <script>
+        $(document).ready(function(){
+            //$('.mdb-select').materialSelect();
+            
+            function formatDate(date) {
+                var d = new Date(date),
+                    month = '' + (d.getMonth() + 1),
+                    day = '' + d.getDate(),
+                    year = d.getFullYear();
+
+                if (month.length < 2) 
+                    month = '0' + month;
+                if (day.length < 2) 
+                    day = '0' + day;
+
+                return [year, month, day].join('-');
+            }
+
+            function Print(){
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                $('.time').text(time);
+                return window.print();
+            }
+            $('#print').click(function(){
+                Print();
+            });
+            
+            $('.inletter').text('Arrêtée à la somme de: ' +NumberToLetter($('#number').text() )+' FCFA');
+        
+        });
+    </script>
+{% endblock %}

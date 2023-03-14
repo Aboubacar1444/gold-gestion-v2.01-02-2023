@@ -1,0 +1,59 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    
+
+<section class="container card" style="margin-top:50px!important;">
+    <div class="row mask blue-gradient">
+        <h1 class="mx-auto">Bienvenue sur <b class="yellow-text">EasyGold</b></h1>
+    </div>
+    <div class="row mask mt-5 mb-3">
+        <div class="text-center col-md-8 mb-3 mx-auto">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show justify-content-center" role="alert">
+                    <strong> {{ message }} </strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for messagee in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show justify-content-center" role="alert">
+                    <strong> {{ messagee }} </strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        <i class="fas fa-user-circle  fa-4x blue-text col-md-12 text-center"></i>
+        <h4 class="mx-auto font-weight-normal">Création de votre compte d'administrateur</h4>
+    </div>
+    <div class="container mask">
+        {{ form_start(form) }}
+           <div class="mx-auto">
+            <div class="md-form col-md-8 mx-auto">
+                {{ form_row(form.fullname) }}
+            </div>  
+            <div class="md-form col-md-8 mx-auto">
+                {{ form_row(form.username) }}
+            </div>
+            <div class="md-form col-md-8 mx-auto">
+                {{ form_row(form.tel) }}
+            </div>  
+            <div class="md-form col-md-8 mx-auto">
+                {{ form_row(form.password.first) }}
+            </div>
+            <div class="md-form col-md-8 mx-auto">
+                {{ form_row(form.password.second) }}
+            </div>
+        </div>
+            <div class="row">
+                <button type="submit" class="btn btn-outline-yellow btn-rounded font-weight-bold mx-auto">Valider</button> 
+            </div>
+        
+        {{ form_end(form) }}
+    </div>
+</section>
+{% endblock %}
+{% block header %}
+{% endblock %}

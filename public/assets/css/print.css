@@ -1,0 +1,7 @@
+header, footer, aside, nav, form, iframe, .menu, .hero, .adslot, .btn, .alert {
+  display: none!important;
+}
+.container, .row, .table{
+    margin:0!important;
+    padding:0!important;
+}

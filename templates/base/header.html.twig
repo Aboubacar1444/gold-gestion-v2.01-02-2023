@@ -1,0 +1,151 @@
+<header>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg scrolling-navbar">
+
+      <div class="container">
+        {% for society in society %}
+        {% if society.logo %}
+          <a class="navbar-brand pb-4" href="{{ path('dashboard') }}" style="width:175px;"><img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid"  alt="logo"></a>
+        {% endif %}
+        
+        {% endfor %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="fas fa-bars indigo-text"></span>
+        </button>
+
+        <div class="collapse navbar-collapse font-weight-bold indigo-text pt-2" id="navbarTogglerDemo02">
+
+          <ul class="navbar-nav mx-auto smooth-scroll">
+            <li class="nav-item mr-2">
+              <a class="nav-link waves-effect waves-light indigo-text" href="{{ path('dashboard') }}"  data-offset="80">
+                <i class="fas fa-home blue-text mr-2"></i> Accueil
+              </a>
+            </li>
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') or is_granted('ROLE_HEADMASTER') %}
+              <li class="nav-item mr-2">
+                <a class="nav-link waves-effect waves-light indigo-text" href="{{ path('agency_index') }}"  data-offset="80">
+                  <i class="fas fa-list blue-text mr-2"></i> Agences
+                </a>
+              </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link waves-effect waves-light indigo-text" data-toggle="modal" data-target="#modalMdpForm" data-offset="80">
+                <i class="fas fa-sync-alt blue-text mr-2"></i> Mot de passe
+              </a>
+            </li>
+            <li class="nav-item dropdown mr-2">
+              <a class="nav-link dropdown-toggle waves-light indigo-text" data-offset="80" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opérations</a>
+              <div class="dropdown-menu dropdown-warning" aria-labelledby="navbarDropdownMenuLink">
+                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') or is_granted('ROLE_HEADMASTER') %}
+                  <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" data-toggle="modal" data-target="#modalAgentForm" data-offset="80">
+                    <i class="fas fa-plus blue-text mr-2"></i> Nouveau agent
+                  </a>
+                {% endif %}
+                
+                <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" data-toggle="modal" data-target="#modalClientForm" data-offset="80">
+                  <i class="fas fa-plus blue-text mr-2"></i> Nouveau client
+                </a>
+
+                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') %}
+                  <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold m-0" data-toggle="modal" data-target="#modalCaisseForm" data-offset="80">
+                    <i class="fas fa-plus blue-text mr-2"></i> Alimenter la caisse
+                  </a>
+                  {# <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold m-0" data-offset="80" href="{{ path('etat') }}">
+                    <i class="fas fa-plus blue-text mr-2"></i> Etat Dubai
+                  </a> #}
+                {% endif %}
+                <hr class="dropdown-divider m-0 p-0">
+                
+                <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('operationtemp', {'transact':'Achat'}) }}">
+                  <i class="fas fa-plus blue-text mr-2"></i> Or | Achat
+                </a>
+
+                <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('operationtemp', {'transact':'Vente'}) }}">
+                  <i class="fas fa-plus blue-text mr-2"></i> Or | Vente
+                </a>
+                <hr class="dropdown-divider m-0 p-0">
+                
+                <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('operationtdr', {'transact':'Dépôt'}) }}">
+                  <i class="fas fa-plus blue-text mr-2"></i> Dépôt
+                </a>
+
+                <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('operationtdr', {'transact':'Rétrait'}) }}">
+                  <i class="fas fa-plus blue-text mr-2"></i> Rétrait
+                </a>
+
+                {# <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" href="{{ path('transfert') }}">
+                  <i class="fas fa-plus blue-text mr-2"></i> Transfert d'argent|Envoi
+                </a> 
+                <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold" data-toggle="modal" data-target="#modalReceveForm" data-offset="80">
+                  <i class="fas fa-money-check-alt blue-text mr-1"></i> Transfert d'argent|Rétrait
+                </a>   #}
+              </div>
+            </li>
+            
+            
+          <!-- Social Icon  -->
+          
+            <li class="nav-item mr-2">
+              {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') %}
+                {% for society in society %}
+                  {% if society.caisse %}
+                    <span class="nav-link waves-effect waves-light font-weight-bold"><i class="fas fa-shopping-bag deep-purple-text"></i> {{ society.caisse|number_format(0,' ',' ') }} FCFA</span>
+                  {% else %}
+                    <span class="nav-link waves-effect waves-light font-weight-bold"><i class="fas fa-shopping-bag deep-purple-text"></i> 0 FCFA</span>
+                  {% endif %}
+                {% endfor %}
+                {% else %}
+                  {% if app.user.agency.caisse %}
+                    <span class="nav-link waves-effect waves-light font-weight-bold"><i class="fas fa-shopping-bag deep-purple-text"></i> {{ app.user.agency.caisse|number_format(0,' ',' ') }} FCFA</span>
+                  {% else %}
+                    <span class="nav-link waves-effect waves-light font-weight-bold"><i class="fas fa-shopping-bag deep-purple-text"></i> 0 FCFA</span>
+                  {% endif %}
+              {% endif %}
+            </li>
+            <li class="nav-item mr-2">
+              {% for society in society %}
+                {% if not society.dollar %}
+                  <span class="nav-link waves-effect waves-light font-weight-bold text-smaller small-10"><i class="fas fa-shopping-bag deep-purple-text"></i> 0 $</span>
+                {% else %}
+                  <span class="nav-link waves-effect waves-light font-weight-bold"><i class="fas fa-shopping-bag deep-purple-text"></i> {{ society.dollar|number_format(0,' ',' ') }} $</span>
+                {% endif %}
+              {% endfor %}
+            </li>
+            <li class="nav-item mr-2">
+              {% for society in society %}
+                {% if not society.euro %}
+                  <span class="nav-link waves-effect waves-light font-weight-bold"><i class="fas fa-shopping-bag deep-purple-text"></i> 0 €</span>
+                {% else %}
+                  <span class="nav-link waves-effect waves-light font-weight-bold"><i class="fas fa-shopping-bag deep-purple-text"></i> {{ society.euro|number_format(0,' ',' ') }} €</span>
+                {% endif %}
+              {% endfor %}
+            </li>
+            <li class="nav-item">
+                <a class="nav-link waves-effect waves-light btn btn-outline-indigo btn-sm btn-rounded font-weight-bold" href="{{ path('app_logout') }}" data-offset="">Déconnexion</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </nav>
+    <div class="text-center col-md-8 mx-auto">
+            
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show justify-content-center" role="alert">
+                    <strong> {{ message }} </strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for messagee in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show justify-content-center" role="alert">
+                    <strong> {{ messagee }} </strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+    </div>
+</header>

@@ -1,0 +1,126 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <section class="container card" style="margin-top:10px!important;">
+        <div class="row mask aqua-gradient-rgba">
+            <h1 class="mx-auto font-weight-bold white-text"> Formulaire - {{transact}}</h1>
+        </div>
+        <div class="row mask">
+            <h3 class="mx-auto font-weight-bolder pt-3 pr-0"> <u>Client</u></h3>
+            {{ form_start(form, {'attr':{'id':'operation'}}) }}
+            <div class="row text-black-50 mx-auto">
+                <div class="md-form col-md-6 mx-auto">
+                    {{ form_row(form.tempclient) }}
+                </div>
+                <div class="md-form col-md-6 mx-auto">
+                    {{ form_row(form.tel) }}
+                </div>
+                {% if app.user.agency %}
+                    <div class="col-md-6 mx-auto">
+                        <h5 class="font-weight-bold"> {{app.user.agency}}</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="font-weight-bold text-black-50 mx-auto mt-3">
+            {{'now'|date('d / m / Y')}}
+        </div>
+        {% if  transact is same as ('Achat de produit') or transact is same as ('Vente de produit') %}
+            <div class="container">
+                <div class="mx-auto">
+                    <div class="md-form row">
+                        <div class="md-form mx-auto col-md-4">
+                            {{ form_row(form.product) }}
+                        </div>
+                        <div class="md-form mx-auto col-md-4">
+                            {{ form_row(form.prixu) }}
+                        </div>
+                        <div class="md-form mx-auto col-md-4">
+                            {{ form_row(form.qte) }}
+                        </div>
+                    </div> 
+                    <div class="md-form row">
+                        <div class="md-form mx-auto col-md-5">
+                        {{ form_row(form.totalm) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn aqua-gradient btn-rounded font-weight-bold mx-auto" id="import">Valider</button> 
+                </div>
+                {{ form_end(form) }} 
+                <div class="row">
+                    <a role="button" class="btn btn-warning btn-rounded font-weight-bold mx-auto" id="print" href="#" style="display:none;">Imprimer</a> 
+                </div>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}
+{% block ScriptP %}
+    <script>
+        $(document).ready(function(){
+            prixu=0;
+            qte=0;
+            total=0;
+            $('#operation_product_prixu').change(function(){
+                prixu=$(this).val();
+                    $('#operation_product_qte').keyup(function(){ 
+                        qte=$(this).val();
+                        if(qte!==''){
+                            total=parseFloat(prixu * qte).toFixed(2);
+                            $('#operation_product_totalm').val(total); 
+                        }else{
+                            $('#operation_product_totalm').val("En attente");
+                        }
+                    });   
+            });
+            function formatDate(date) {
+                var d = new Date(date),
+                    month = '' + (d.getMonth() + 1),
+                    day = '' + d.getDate(),
+                    year = d.getFullYear();
+
+                if (month.length < 2) 
+                    month = '0' + month;
+                if (day.length < 2) 
+                    day = '0' + day;
+
+                return [year, month, day].join('-');
+            }
+            $('#operation').on('submit', function(event){
+                event.preventDefault();
+                
+                
+                $.ajax({
+                    url:"{{ path('operationproduct',{'transact': transact}) }}",
+                    method:"POST",
+                    data:new FormData(this),
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    beforeSend:function(){
+                        $('#import').attr('disabled', 'disabled');
+                        $('#import').text('En cours...');
+                    },
+                    success:function(response)
+                    {
+                        $('#operation').trigger("reset");
+                        $('#operation_product_tempclient').val(response[0]);
+                        $('#operation_product_tel').val(response[3]);
+                        $('#import').attr('disabled', false);
+                        $('#import').text('Valider');
+                        link="{{ path('facturationproduct', {'id':'idd', 'type':'typee', 'date':'datee'}) }}";
+                        a=link.replace('idd', response[0]);
+                        b=a.replace('typee', response[1]);
+                        c=b.replace('datee', response[2]);
+                        $('#print').attr("href", c);
+                        $('#print').show('fast');
+                    }
+                })
+                
+            }); 
+
+           
+
+        })
+    </script>
+{% endblock %}

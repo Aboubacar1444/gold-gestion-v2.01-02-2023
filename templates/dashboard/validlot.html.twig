@@ -1,0 +1,235 @@
+{% extends "base.html.twig" %}
+{% block print %}
+    <link rel="stylesheet" media="print" href="{{ asset('./assets/css/print.css') }}" />
+{% endblock %}
+{% block body %}
+    <section class="container card">
+        {% for society in society %}     
+            <div class="row mask">
+                {% if society.logo %}
+                <div class="col-md-12 mb-5">
+                    <div class="justify-content-center align-items-center mx-auto my-auto text-center">
+                        <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-12">
+                     <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
+                </div>
+                <div class="row mx-auto">
+                    <div class="col-md-12 mx-auto mb-1">
+                        <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
+                        <h5 class="text-center font-weight-bold"> {{ society.email }}</h5>
+                    </div>
+                    <div class="col-md-12 mx-auto text-center">
+                        <h5 class="text-center font-weight-bold"> {% if app.user.agency %} {{ app.user.agency.tel }} {% else %} {{ society.tel }} {% endif %}</h5>
+                        <code class="font-weight-bold font-italic mt-1 text-center justify-content-center align-center">Votre Satisfation, notre engagement!</code>
+                    </div>
+                    <div class="col-md-12 mx-auto rounded">
+                        {% if app.user.agency %}
+                            <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Agence</u>: {{ app.user.agency }} </h5>
+                        {% endif %}
+                        <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Par</u>: {{ agent }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row mask blue-gradient mt-3">
+            <h1 class="mx-auto font-weight-bold white-text"> {{type == "Lot" ? "Gold" : "Caisse Dubai"}} Or - N° {{numero}}</h1>
+        </div>
+        {% if type is same as ('Lot') %}
+            <div class="row font-weight-bold text-black-50 col-md-12">
+                <div class="col-md-6"> {{'now'|date('d - m - Y')}} | 
+                    <span id="time"></span>
+                </div>
+                {% if not see %}
+                    <div class="col-md-3 font-weight-bold text-bold md-form"> 
+                        <input type="text" class="md-form form-control" placeholder="Montant de la vente en $" id="vente">
+                    </div>
+                    <div class="col-md-1 font-weight-bold text-bold md-form"> 
+                        <input type="text" class="md-form form-control" placeholder="Once" id="fixing">
+                    </div>
+                    <div class="col-md-1 font-weight-bold text-bold md-form"> 
+                        <input type="text" class="md-form form-control" placeholder="Poids 24 Carat" id="p24carat">
+                    </div>
+                {% else %}
+                     <div class="col-md-3 font-weight-bold text-bold md-form"> 
+                        Montant total de la vente: <input type="text" class="md-form form-control" readonly id="vente" value ="{{mtotal}} $">
+                    </div>
+                {% endif %}
+                
+            </div>
+            
+            <div class="container mt-3">
+                <table class="table text-center align-items-center table-bordered table-hover text-monospace  table-responsive-sm table-responsive-md">
+                    <thead class="thead-light text-monospace">
+                        <tr>
+                            <th class="font-weight-bold">Date</th>
+                            <th class="font-weight-bold">Poids</th>
+                            <th class="font-weight-bold">P. 24 Carat</th>
+                            <th class="font-weight-bold">Avance dollar</th>
+                            <th class="font-weight-bold">Prix fixing</th>
+                            <th class="font-weight-bold">Taux dollar</th>
+                            <th class="font-weight-bold">Avance Fcfa</th>
+                            <th class="font-weight-bold">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-bold">
+                        {% for operation in operations %}
+                            <tr>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.createdAt|date('d-m-Y') ~ ' - ' ~ operation.time }}</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.poidair }}</td>
+                                <td class="font-weight-bolder text-monospace p24carat" style="font-size:18px!important;">{{operation.qte}}</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.avdollar|number_format(0,' ',' ') }} $</td>
+                                <td class="font-weight-bolder once text-monospace" style="font-size:18px!important;">{{ operation.prixu }}</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.taux }}</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.avance|number_format(0,' ',' ') }} FCFA</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.total|number_format(0,' ',' ') }} $</td>
+                            </tr>
+                        {% endfor %}
+                            <tr>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;" colspan='2'>T. Av. Dollar:<span id="number"> {{montant|number_format(0, ' ', ' ')}}</span> $</td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">-</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;" colspan='2'>T. Av. FCFA:<span id="fcfa"> {{fcfa|number_format(0, ' ', ' ')}}</span> FCFA</td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bolder" style="font-size:18px!important;" colspan="6">Réliquat</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;" colspan='2'><span id="rel"> {{reliquat}} </span> $</td>
+                            </tr>
+                    </tbody>
+                </table>
+                <span class="font-weight-bolder text-capitalize text-monospace" style="font-size:18px!important;" id="indollar"></span><br>
+                <span class="font-weight-bolder text-capitalize text-monospace" style="font-size:18px!important;" id="infcfa"></span>
+            </div>
+            {% if not see %}
+                <button id="valid" type="button" class="btn btn-rounded btn-outline-success btn-md mx-auto text-center">Valider</button>
+            {% endif %}
+        {% else %}
+            <div class="row font-weight-bold text-black-50 col-md-12  mt-3">
+                <div class="col-md-6"> {{'now'|date('d - m - Y')}} | 
+                    <span id="time"></span>
+                </div>
+                {# <div class="col-md-6"> Nombre barre(s) | {{barre}} </div>   #}
+            </div>
+            
+            <div class="container mt-3">
+                <table class="table text-center align-items-center table-bordered table-hover  table-responsive-sm table-responsive-md">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="font-weight-bold text-monospace" style="font-size:18px!important;">Lot N°</th>
+                            <th class="font-weight-bold text-monospace" style="font-size:18px!important;">Date</th>
+                            <th class="font-weight-bold text-monospace" style="font-size:18px!important;">Client</th>
+                            <th class="font-weight-bold text-monospace" style="font-size:18px!important;">Valeur vendue</th>
+                            <th class="font-weight-bold text-monospace" style="font-size:18px!important;">Solde</th> 
+                            <th class="font-weight-bold text-monospace" style="font-size:18px!important;">Commission</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-bold">
+                        {% for operation in operations %}    
+                            <tr>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.numero }}</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.createdAt|date('d-m-Y') ~ ' - ' ~ operation.time }}</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.tempclient ~ ' - ' ~ operation.tel }}</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.montant|number_format(0,' ',' ') }} $</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.totalm|number_format(0,' ',' ') }} $</td>
+                                <td class="font-weight-bolder text-monospace" style="font-size:18px!important;">{{ operation.avdollar|number_format(0,' ',' ') }} $</td>
+                            </tr>
+                        {% endfor %}
+                            <tr>
+                                <td class="font-weight-bolder" style="font-size:18px!important;" colspan='3'>Total:</td>
+                                {# <td class="font-weight-bolder" style="font-size:18px!important;"></td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;"></td> #}
+                                <td class="font-weight-bolder" style="font-size:18px!important;">{{ solde|number_format(0,' ',' ') }} $</td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">{{totalm|number_format(0, ' ', ' ')}} $</td>
+                                <td class="font-weight-bolder" style="font-size:18px!important;">{{comis|number_format(0, ' ', ' ')}} $</td>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        <div class="row mx-auto">
+            <a name="" id="print" class="btn btn-rounded btn-lg btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
+        </div>
+    </section>
+{% endblock %}
+{% block ScriptP %}
+    <script>
+        $().ready(function(){
+            $('.once').text(parseFloat($('.once').text()).toFixed(2));
+            function Print(){
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                $('.time').text(time);
+                return window.print();
+            }
+            $('#print').click(function(){
+                Print();
+            });
+        });
+        number=$('#number').text();
+        $('#indollar').text('Arrêtée à la somme de: ' +NumberToLetter(number)+' $');
+        fcfa=$('#fcfa').text();
+        $('#infcfa').text('Arrêtée à la somme de: ' +NumberToLetter(fcfa)+' FCFA');
+        fixed=$('#tofixed').text();
+        fixed=parseFloat(fixed).toFixed(2);
+        $('#tofixed').text(fixed);
+        $('#vente').keyup(function(){
+            vente=$(this).val();
+            if(vente){
+                vente = vente - {{montant}};
+                $('#rel').text(parseFloat(vente).toFixed(2)); 
+            }else{
+                $('#rel').text(parseFloat(0).toFixed(2)); 
+            } 
+            
+        });
+        $('#fixing').keyup(function(){
+            fixing=$(this).val();
+            if(fixing){
+                $('.once').text(parseFloat(fixing).toFixed(2)); 
+            }else{
+                $('.once').text(parseFloat(0).toFixed(2));
+            }  
+        });
+        $('#p24carat').keyup(function(){
+            p24carat=$(this).val();
+            if(p24carat){
+                $('.p24carat').text(parseFloat(p24carat).toFixed(2)); 
+            }else{
+                $('.p24carat').text(parseFloat(0).toFixed(2)); 
+            } 
+            
+        });
+         $('#valid').click(function(){
+                $(this).hide();
+                $.ajax({
+                    url:"{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}",
+                    method:"POST",
+                    data:{
+                        totalm: $('#vente').val(),
+                        prixu: $('#fixing').val(),
+                        reliquat: parseFloat($('#rel').text()).toFixed(2),
+                        p24carat: parseFloat($('#p24carat').val()).toFixed(2)
+                    },
+                    success:function(response)
+                    {
+                        console.log("success");
+                    }
+                })
+            });
+    </script>
+{% endblock %}
