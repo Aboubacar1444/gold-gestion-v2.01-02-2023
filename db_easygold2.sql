@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 15 nov. 2021 à 04:31
+-- Généré le : mar. 14 mars 2023 à 14:33
 -- Version du serveur :  5.7.31
--- Version de PHP : 7.4.11
+-- Version de PHP : 7.4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -43,8 +43,32 @@ CREATE TABLE IF NOT EXISTS `agency` (
 
 INSERT INTO `agency` (`id`, `name`, `tel`, `caisse`, `email`) VALUES
 (9, 'GAO', '98858585', '-1946902.68', 'xx@x.com'),
-(10, 'Bamako', '45212558', '8950000', 'xx@x.com'),
+(10, 'Bamako', '45212558', '13872867.12', 'xx@x.com'),
 (11, 'GAO', '98858585', '15896555.9', 'xx@x.com');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `alimentation_caisse`
+--
+
+DROP TABLE IF EXISTS `alimentation_caisse`;
+CREATE TABLE IF NOT EXISTS `alimentation_caisse` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `montant` double NOT NULL,
+  `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `alimentation_caisse`
+--
+
+INSERT INTO `alimentation_caisse` (`id`, `montant`, `created_at`, `type`) VALUES
+(1, 7000000, '2021-12-12 03:22:42', ''),
+(2, 2000000, '2021-12-07 01:25:00', ''),
+(3, 5000, '2022-02-07 00:51:47', 'Dollar');
 
 -- --------------------------------------------------------
 
@@ -88,7 +112,9 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 ('DoctrineMigrations\\Version20210724012643', '2021-07-24 01:26:48', 810),
 ('DoctrineMigrations\\Version20210810070724', '2021-08-10 07:07:35', 3401),
 ('DoctrineMigrations\\Version20210819142740', '2021-08-19 14:27:51', 2969),
-('DoctrineMigrations\\Version20210825225359', '2021-08-25 22:54:12', 2269);
+('DoctrineMigrations\\Version20210825225359', '2021-08-25 22:54:12', 2269),
+('DoctrineMigrations\\Version20211212030656', '2021-12-12 03:10:28', 3237),
+('DoctrineMigrations\\Version20220206235938', '2022-02-07 00:00:02', 889);
 
 -- --------------------------------------------------------
 
@@ -128,7 +154,28 @@ CREATE TABLE IF NOT EXISTS `operations` (
   PRIMARY KEY (`id`),
   KEY `IDX_2814534819EB6921` (`client_id`),
   KEY `IDX_28145348CDEADB2A` (`agency_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=290 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `operations`
+--
+
+INSERT INTO `operations` (`id`, `client_id`, `agency_id`, `type`, `base`, `poideau`, `poidair`, `densite`, `karat`, `prixu`, `montant`, `avance`, `totalm`, `total`, `created_at`, `agent`, `facture`, `numero`, `motif`, `tempclient`, `time`, `tel`, `qte`, `product`, `taux`, `avdollar`, `valid`) VALUES
+(274, NULL, NULL, 'Vente', 31000, 10, 131, 13.1, 10.3, 13304.17, 1742846.27, NULL, 1742846.27, 1742846.27, '2022-02-01 00:00:00', 'MAHRI SADAM', 'Ok', 1, NULL, 'ClientX', '00:58:15', '76767676', NULL, NULL, NULL, NULL, NULL),
+(275, NULL, NULL, 'Achat', 31000, 10, 131, 13.1, 10.3, 13304.17, 1742846.27, NULL, 1742846.27, 1742846.27, '2022-02-01 00:00:00', 'MAHRI SADAM', 'Ok', 1, NULL, 'ClientX', '01:11:07', '76767676', NULL, NULL, NULL, NULL, NULL),
+(276, NULL, NULL, 'Achat', 31000, 10, 131, 13.1, 10.3, 13304.17, 1742846.27, NULL, NULL, NULL, '2022-02-01 00:00:00', 'MAHRI SADAM', NULL, NULL, NULL, 'ClientX', '21:58:18', '76767676', NULL, NULL, NULL, NULL, NULL),
+(277, 19, NULL, 'Dépôt', 0, NULL, NULL, NULL, NULL, NULL, 50000, NULL, NULL, NULL, '2022-02-06 00:00:00', 'MAHRI SADAM', 'Ok', 1, 'Dépot', NULL, '22:46:39', NULL, NULL, NULL, NULL, NULL, NULL),
+(278, NULL, NULL, 'FD', 0, NULL, NULL, NULL, NULL, NULL, 1000, 50000, 50000, 0, '2022-02-06 00:00:00', 'MAHRI SADAM', 'Ok', 1, 'Achat dollar', 'ClientX', '23:27:14', '76767676', NULL, NULL, 50, NULL, 1),
+(279, NULL, NULL, 'FE', 0, NULL, NULL, NULL, NULL, NULL, 1000, 60000, 60000, 0, '2022-02-06 00:00:00', 'MAHRI SADAM', 'Ok', 1, 'Achat Euro', 'ClientX', '23:34:46', '76767676', NULL, NULL, 60, NULL, 1),
+(280, NULL, NULL, 'DF', 0, NULL, NULL, NULL, NULL, NULL, 1000, NULL, 30000, 30000, '2022-02-06 00:00:00', 'MAHRI SADAM', 'Ok', 1, 'Vente Dollar', 'ClientX', '23:37:47', '76767676', NULL, NULL, 30, NULL, 1),
+(281, NULL, NULL, 'EF', 0, NULL, NULL, NULL, NULL, NULL, 1000, NULL, 30000, 30000, '2022-02-06 00:00:00', 'MAHRI SADAM', 'Ok', 1, 'Vente Euro', 'ClientX', '23:39:10', '76767676', NULL, NULL, 30, NULL, 1),
+(282, NULL, NULL, 'FD', 0, NULL, NULL, NULL, NULL, NULL, 1000, NULL, 20000, 70000, '2022-02-07 00:00:00', 'MAHRI SADAM', 'Ok', 2, 'Motif', 'ClientX', '15:30:22', '76767676', NULL, NULL, 20, NULL, 1),
+(283, 19, NULL, 'Dépôt', 0, NULL, NULL, NULL, NULL, NULL, 50000, NULL, NULL, NULL, '2022-02-07 00:00:00', 'MAHRI SADAM', 'Ok', 2, 'Epargne', NULL, '15:32:27', NULL, NULL, NULL, NULL, NULL, NULL),
+(285, 19, NULL, 'Achat', 33000, 2, 27, 13.5, 11.5, 15812.5, 426937.5, NULL, 426937.5, 426937.5, '2022-02-08 00:00:00', 'MAHRI SADAM', 'Ok', 2, NULL, NULL, '21:26:54', NULL, NULL, NULL, NULL, NULL, NULL),
+(286, 19, NULL, 'Rétrait', 0, NULL, NULL, NULL, NULL, NULL, 500000, NULL, NULL, NULL, '2022-02-08 00:00:00', 'MAHRI SADAM', 'Ok', 1, 'Rétrait', NULL, '21:32:35', NULL, NULL, NULL, NULL, NULL, NULL),
+(287, NULL, NULL, 'FE', 0, NULL, NULL, NULL, NULL, NULL, 5000, NULL, 250000, 250000, '2022-03-03 00:00:00', 'MAHRI SADAM', 'Ok', 2, 'Motif', 'Aboubacar Togola', '04:00:20', '11111', NULL, NULL, 50, NULL, NULL),
+(288, NULL, NULL, 'FD', 0, NULL, NULL, NULL, NULL, NULL, 1000, NULL, 500000, 500000, '2022-03-03 00:00:00', 'MAHRI SADAM', 'Ok', 3, 'achat', 'Aboubacar Togola', '04:09:38', '111111', NULL, NULL, 500, NULL, NULL),
+(289, NULL, 9, 'Achat', 30000, 10, 136.01, 13.6, 11.8, 14750, 2006147.5, NULL, NULL, NULL, '2022-06-15 00:00:00', 'MOHAMED', NULL, NULL, NULL, 'Aboubacar Sidiki Togola', '17:27:13', '+22377425252', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -156,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `society` (
 --
 
 INSERT INTO `society` (`id`, `name`, `job`, `logo`, `caisse`, `tel`, `dollar`, `euro`, `description`, `email`) VALUES
-(3, 'ALTAWFIQ TRADING SOLUTION Sarl', 'commerce general', NULL, 14475557.32, '92857171', 550000, 14, 'DDDF', 'xxx@x.com');
+(3, 'NEW ENTERPRISE', 'NEW JOB', 'gold.png', 536000, 'XX XX XX XX', 5000, -250000, 'NEW DESCRIBE', 'xxx@x.com');
 
 -- --------------------------------------------------------
 
@@ -234,9 +281,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`id`, `username`, `roles`, `password`, `type`, `solde`, `tel`, `fullname`, `agency_id`, `isconnected`) VALUES
 (15, 'BEN', '[\"ROLE_ADMIN\"]', '$2y$13$7Df6woJke5VyWD/pJte58.xL9PQEpo0zDJvIL3Ea2XxhyGhJEA9d.', 'Super', NULL, '92857171', 'MAHRI SADAM', NULL, 1),
 (16, 'ALI', '[\"ROLE_AGENT\"]', '$2y$13$2W/Rp2ZFc2S.QjbQGx4ftufYLVjGS/7L.rZGK1IUcDiMPU0Vx6dPu', 'Agent', NULL, '66666666', 'ALI', 10, 0),
-(17, 'MOH', '[\"ROLE_AGENT\"]', '$2y$13$eVAs90JAS6bIs3ebUH5V6eivq440wMW8KLcbOPvwLsJ1M4S2INXfS', 'Agent', NULL, '78787878', 'MOHAMED', 9, 0),
-(18, 'MT918', '[\"ROLE_CLIENT\"]', '$2y$13$vlWXmpydr9aSnJtrsXBz9eCvvhULgxtIDwSjmBDV0CKsEQJ0aZVn6', 'Client', 19784165.8, '2222', 'M T', 9, NULL),
-(19, 'SIDIBEMA983', '[\"ROLE_CLIENT\"]', '$2y$13$Saohcc15PchLRg88rzyc4OfsDE1TQfUKeqXN7CTZQZmKmsFTzCpN.', 'Client', 1477290.8, '77264552', 'SIDIBE MADOU', 10, NULL);
+(17, 'MOH', '[\"ROLE_AGENT\"]', '$2y$13$eVAs90JAS6bIs3ebUH5V6eivq440wMW8KLcbOPvwLsJ1M4S2INXfS', 'Agent', NULL, '78787878', 'MOHAMED', 9, 1),
+(19, 'SIDIBEMA983', '[\"ROLE_CLIENT\"]', '$2y$13$Saohcc15PchLRg88rzyc4OfsDE1TQfUKeqXN7CTZQZmKmsFTzCpN.', 'Client', 26937.5, '77264552', 'SIDIBE MADOU', 10, NULL);
 
 --
 -- Contraintes pour les tables déchargées
