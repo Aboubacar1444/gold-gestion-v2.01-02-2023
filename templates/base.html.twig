@@ -41,7 +41,7 @@
            
         {% endblock %}
     </head>
-    <body>
+    <body class= {% if app.request.get('_route') == "app_login" %} "rgba-grey-strong" {% endif %} >
         {% block header %}
                 {% include "base/header.html.twig" %}
         {% endblock %}

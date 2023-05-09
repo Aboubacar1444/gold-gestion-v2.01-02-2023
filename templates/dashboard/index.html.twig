@@ -268,9 +268,9 @@
                                     <a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('user_edit', {'id': user.id}) }}">Modif</a>
                                     {{ include('user/_delete_form.html.twig') }}
                                 </td>
-                                <td>
-                                    <div class="row">
-                                        <div class="">
+                                <td class="container-sm">
+                                    <div class="d-flex">
+                                        <div class="col-md-12">
                                             <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('operation',{'id':user.id, 'type':user.type, 'transact': 'Achat' }) }}">Achat|Or</a>
                                             <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('operation',{'id':user.id, 'type':user.type, 'transact': 'Vente' }) }}">Vente|Or</a>
                                         </div>
@@ -287,7 +287,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class=" mx-auto">
+                                        <div class="col-md-12">
                                             {# <a class="btn blue-gradient btn-rounded btn-sm font-weight-bold" href="{{ path('transfert',{'id':user.id,'cl':user.useridentifier}) }}">Transfert</a> #}
                                             <a class="btn btn-warning btn-rounded btn-sm font-weight-bold" href="{{ path('user_show', {'id': user.id}) }}">Rapport</a>
                                         </div>
@@ -341,7 +341,6 @@
                                     {% elseif not user.isconnected %}
                                         <h6><span class="text-black-50 font-weight-bold badge rounded-pill bg-warning">Déconnecté</span></h6>
                                     {% endif %}
-                                    
                                 </td>
                                 <td>
                                     <a class="btn btn-outline-warning btn-rounded btn-sm" href="{{ path('user_edit', {'id': user.id}) }}">Modif</a>

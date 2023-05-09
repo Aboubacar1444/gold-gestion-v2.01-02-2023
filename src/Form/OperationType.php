@@ -48,7 +48,7 @@ class OperationType extends AbstractType
                 'attr'=>[
                     'class'=>'md-form',
                     'placeholder'=>"Carat",
-                    'readonly'=>'readonly',
+//                    'readonly'=>'readonly',
                 ]
             ])
             ->add('prixu', NumberType::class,[

@@ -555,15 +555,15 @@
             }
             
             
-            poideau=0;
-            poidair=0;
-            densite=0;
-            prixu=0;
-            carat=0;
-            base=0;
-            montant=0;
-            taux=0;
-            avance=0;
+            var poideau=0;
+            var poidair=0;
+            var densite=0;
+            var prixu=0;
+            var carat=0;
+            var base = 0;
+            var montant=0;
+            var taux=0;
+            var avance=0;
             $('#operation_taux').change(function(){
                 taux=$(this).val();
             });
@@ -572,30 +572,53 @@
             });
             $('#operation_base').keyup(function(){
                 base=$(this).val();
-                    $('#operation_poidair').keyup(function(){
-                        poidair=$(this).val();
-                        $('#operation_poideau').keyup(function(){
-                        poideau=$(this).val();
-                        densite=$('#operation_densite').val(parseFloat(poidair/poideau).toFixed(2));              
-                        carat=getKarat(parseFloat(densite.val()).toFixed(2));
-                        $('#operation_karat').val(carat);
-                        prixu=parseFloat((base/24)*carat).toFixed(2);
-                        $('#operation_prixu').val(prixu);
-                        montant=parseFloat(poidair*prixu).toFixed(2);
-                        $('#operation_montant').val(montant);
-                        if(taux !==0 && taux !== null){
-                            $('#operation_qte').val(parseFloat(montant / taux).toFixed(2));
-                            $('#operation_vdollar').val(parseFloat(avance / taux).toFixed(2));
-                        }
-                        
-                        /*$('#operation_totalm').val(montant);
-                        if($('#operation_avance').val()!==''){
-                            total=montant - $('#operation_avance').val();
-                            $('#operation_total').val(total);   
-                        }*/
-                    });   
-                });
+
             });
+            $('#operation_poidair').keyup(function(){
+                poidair=$(this).val();
+            });
+            $('#operation_poideau').keyup(function(){
+                poideau=$(this).val();
+
+                densite=$('#operation_densite').val(parseFloat(poidair/poideau).toFixed(2));
+                carat=getKarat(parseFloat(densite.val()).toFixed(2));
+                $('#operation_karat').val(carat);
+                prixu=parseFloat((base/24)*carat).toFixed(2);
+
+                $('#operation_prixu').val(prixu);
+                montant=parseFloat(poidair*prixu).toFixed(2);
+                $('#operation_montant').val(montant);
+
+                if(taux !==0 && taux !== null){
+                    $('#operation_qte').val(parseFloat(montant / taux).toFixed(2));
+                    $('#operation_vdollar').val(parseFloat(avance / taux).toFixed(2));
+                }
+
+            });
+            if (base && poidair && poideau){
+                densite=$('#operation_densite').val(parseFloat(poidair/poideau).toFixed(2));
+                carat=getKarat(parseFloat(densite.val()).toFixed(2));
+                $('#operation_karat').val(carat);
+                prixu=parseFloat((base/24)*carat).toFixed(2);
+
+                $('#operation_prixu').val(prixu);
+                montant=parseFloat(poidair*prixu).toFixed(2);
+                $('#operation_montant').val(montant);
+
+
+                if(taux !==0 && taux !== null){
+                    $('#operation_qte').val(parseFloat(montant / taux).toFixed(2));
+                    $('#operation_vdollar').val(parseFloat(avance / taux).toFixed(2));
+                }
+            }
+            $('#operation_karat').keyup(function (){
+                carat = $(this).val();
+                prixu=parseFloat((base/24)*carat).toFixed(2);
+                $('#operation_prixu').val(prixu);
+                montant=parseFloat(poidair*prixu).toFixed(2);
+                $('#operation_montant').val(montant);
+            })
+
             function formatDate(date) {
                 var d = new Date(date),
                     month = '' + (d.getMonth() + 1),

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Operations;
@@ -10,12 +9,15 @@ use App\Form\OperationType;
 use App\Repository\OperationsRepository;
 use App\Repository\SocietyRepository;
 use App\Repository\UserRepository;
+use App\Service\WhatsAppService;
+use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use UltraMsg\WhatsAppApi;
 
 /**
  * @Route("/operation")
@@ -149,7 +151,7 @@ class OperationController extends AbstractController
     /**
      * @Route("/facturation/{id}/{type}/{base}/{date}", name="facturation")
      */
-    public function Facturation(Request $request, OperationsRepository $operationsRepository, UserRepository $userRepository, SocietyRepository $societyRepository): Response
+    public function Facturation(Request $request, WhatsAppService $whatsAppService, OperationsRepository $operationsRepository, UserRepository $userRepository, SocietyRepository $societyRepository): Response
     {
         $em= $this->getDoctrine()->getManager();
         $type=$request->get('type');
@@ -215,7 +217,7 @@ class OperationController extends AbstractController
                     $agencycaisse=false;
                 }
                 foreach ($operations as $c){
-                    $agent=$c->getAgent();
+                    $agent=$c->getAgent() ? : "AGENT";
                     $a=$c->getAvance();
                     $avance+=$a;
                     $totalair+=$c->getPoidair();
@@ -232,7 +234,6 @@ class OperationController extends AbstractController
  
                 }
                 foreach ($society as $s) {
-                        
                     $caisse=$s->getCaisse();
                     if($type == "Achat"){
                         // $caisse=$caisse - $total;
@@ -243,6 +244,11 @@ class OperationController extends AbstractController
                         // }
                         // $s->setCaisse($caisse);
                         $user->setSolde($solde);
+                        $body="$type Or "." Nº$numero, Total: $total. FCFA. 
+                                Nouveau solde: $solde FCFA.  
+                                Bien à vous ".$user->getFullname().". Ceci est un TEST de lapplication EASYGOLD";
+
+
                     }
                     elseif ($type == "Vente") {
                         $caisse=$caisse + $total;
@@ -252,12 +258,18 @@ class OperationController extends AbstractController
                             $this->getUser()->getAgency()->setCaisse($agencycaisse);
                         }
                         $s->setCaisse($caisse);
-                        $user->setSolde($solde);   
+                        $user->setSolde($solde);
+                        $body="$type Or "." Nº$numero, Total: $total. FCFA. 
+                                Nouveau solde: $solde FCFA.  
+                                Bien à vous ".$user->getFullname().". Ceci est un TEST de lapplication EASYGOLD";
+
                     }   
                 }
             }
             if ($request->get('valid') == true) {
                 $em->flush();
+
+                $whatsAppService->sendMessage($user->getTel(), $body);
                 return new JsonResponse($request->get('valid'));
                 $this->addFlash("success", "Facture enregistrée!");
             }
@@ -273,7 +285,7 @@ class OperationController extends AbstractController
             }
             
             if($recu){
-                $agent=$recu->getAgent();
+                $agent=$recu->getAgent() ? : "AGENT";
                 $montant=$recu->getMontant();
                 $solde=$user->getSolde(); 
                 $recu->setFacture('Ok');
@@ -311,6 +323,12 @@ class OperationController extends AbstractController
                     }
                     
                     $em->flush();
+                    $body=" Reçu de votre $type"." Nº$numero de $montant FCFA.  
+                            Motif:". $recu->getMotif(). "
+                            Solde actuel: $solde. Bien à vous ".$user->getFullname().". Ceci est un TEST de lapplication EASYGOLD";
+
+                    $whatsAppService->sendMessage($user->getTel(), $body);
+
                     $this->addFlash("success", "Facture enregistrée!");
                 }
      

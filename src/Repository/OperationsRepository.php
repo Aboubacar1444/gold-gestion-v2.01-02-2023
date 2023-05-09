@@ -72,44 +72,36 @@ class OperationsRepository extends ServiceEntityRepository
                 UNION 
                 SELECT operations.*, client_id, tempclient FROM operations WHERE client_id is null AND numero is null AND facture is null AND operations.agency_id= ? " 
         ;
-        $stmt=$em->prepare($req);
-        $stmt->executeQuery([$agency,$agency]);
-       
-        $data = $stmt->fetchAllAssociative();
-        return $data;
+
+
+
+        return $em->fetchAllAssociative($req,[$agency,$agency]);
+
     }
     public function setNumero($type): array
     {
         $em = $this->getEntityManager()->getConnection();
+       return $em->fetchAllAssociative("SELECT * FROM operations WHERE type= ? AND numero is not null ORDER BY id DESC LIMIT 1", [$type]);
 
-        $req= "SELECT * FROM operations WHERE type= ? AND numero is not null ORDER BY id DESC LIMIT 1 ";
-        $stmt=$em->prepare($req);
-        $stmt->executeQuery(array($type));
-       
-        $data = $stmt->fetchAllAssociative();
-        return $data;
     }
     public function getLastOps($client): array
     {
         $em = $this->getEntityManager()->getConnection();
 
         $req= " SELECT * FROM operations WHERE client_id = ? OR tempclient = ? AND facture is null ORDER BY id DESC";
-        $stmt=$em->prepare($req);
-        $stmt->executeQuery(array($client, $client));
        
-        $data = $stmt->fetchAllAssociative();
-        return $data;
+        return $em->fetchAllAssociative($req, [$client, $client]);
+
     }
     public function getBackLastOps($id): array
     {
         $em = $this->getEntityManager()->getConnection();
 
         $req= " SELECT * FROM operations WHERE id = ? AND facture is null ORDER BY id DESC";
-        $stmt=$em->prepare($req);
-        $stmt->executeQuery(array($id));
+
        
-        $data = $stmt->fetchAllAssociative();
-        return $data;
+        return $em->fetchAllAssociative($req, [$id]);
+
     }
     
     public function FilterByAgent($agent): array
@@ -117,11 +109,10 @@ class OperationsRepository extends ServiceEntityRepository
         $em = $this->getEntityManager()->getConnection();
 
         $req= " SELECT * FROM operations WHERE agent = ? AND type ='Lot Dubai' AND facture ='Ok' ORDER BY id DESC";
-        $stmt=$em->prepare($req);
-        $stmt->executeQuery(array($agent));
+        $em->prepare($req);
+        $em->executeQuery(array($agent));
        
-        $data = $stmt->fetchAllAssociative();
-        return $data;
+        return $em->fetchAllAssociative($req,);
     }
 
     public function DISTINCT($agency): array
@@ -129,11 +120,11 @@ class OperationsRepository extends ServiceEntityRepository
         $em = $this->getEntityManager()->getConnection();
 
         $req= " SELECT DISTINCT * FROM operations WHERE facture = 'Ok' AND agency_id is ? OR agency_id = ? GROUP BY numero ORDER BY id DESC";
-        $stmt=$em->prepare($req);
-        $stmt->executeQuery([$agency,$agency]);
+        $em->prepare($req);
+        $em->executeQuery([$agency,$agency]);
        
-        $data = $stmt->fetchAllAssociative();
-        return $data;
+        return $em->fetchAllAssociative();
+
     }
 
     

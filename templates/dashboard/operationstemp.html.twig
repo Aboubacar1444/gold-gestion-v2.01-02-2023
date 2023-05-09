@@ -514,38 +514,42 @@
                 return karat;
             }
             
-            poideau=0;
-            poidair=0;
-            densite=0;
-            prixu=0;
-            carat=0;
-            base=0;
-            montant=0;
+            var poideau=0;
+            var poidair=0;
+            var densite=0;
+            var prixu=0;
+            var carat=0;
+            var base=0;
+            var montant=0;
 
             $('#operation_temp_base').change(function(){
                 base=$(this).val();
-                    $('#operation_temp_poidair').keyup(function(){
-                        
-                        poidair=$(this).val();
-                        $('#operation_temp_poideau').keyup(function(){
-                        poideau=$(this).val();
-                        densite=$('#operation_temp_densite').val(parseFloat(poidair/poideau).toFixed(2));              
-                        carat=getKarat(parseFloat(densite.val()));
-                        //console.log(carat, (carat).toFixed(2));
-                        $('#operation_temp_karat').val((carat).toFixed(2));
-                        prixu=parseFloat((base/24)*carat).toFixed(2);
-                        $('#operation_temp_prixu').val(prixu);
-                        montant=parseFloat(poidair*prixu).toFixed(2);
-                        $('#operation_temp_montant').val(montant);
-                        /*$('#operation_totalm').val(montant);
-                        if($('#operation_avance').val()!==''){
-                            total=montant - $('#operation_avance').val();
-                            $('#operation_total').val(total);
-                            
-                        }*/
-                    });   
-                });
             });
+            $('#operation_temp_poidair').keyup(function(){
+                poidair=$(this).val();
+            });
+
+            $('#operation_temp_poideau').keyup(function(){
+                poideau=$(this).val();
+                densite=$('#operation_temp_densite').val(parseFloat(poidair/poideau).toFixed(2));
+                carat=getKarat(parseFloat(densite.val()));
+                $('#operation_temp_karat').val((carat).toFixed(2));
+
+                prixu=parseFloat((base/24)*carat).toFixed(2);
+                $('#operation_temp_prixu').val(prixu);
+                montant=parseFloat(poidair*prixu).toFixed(2);
+                $('#operation_temp_montant').val(montant);
+
+            });
+
+            $('#operation_temp_karat').keyup(function (){
+                carat = $(this).val();
+                prixu=parseFloat((base/24)*carat).toFixed(2);
+                $('#operation_temp_prixu').val(prixu);
+                montant=parseFloat(poidair*prixu).toFixed(2);
+                $('#operation_temp_montant').val(montant);
+            })
+
             function formatDate(date) {
                 var d = new Date(date),
                     month = '' + (d.getMonth() + 1),

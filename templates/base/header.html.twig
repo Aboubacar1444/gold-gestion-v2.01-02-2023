@@ -43,12 +43,14 @@
 
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg scrolling-navbar">
+    <nav class="navbar navbar-expand-md scrolling-navbar gradient-card-header">
 
-      <div class="container">
+      <div class="mce-container container-fluid">
         {% for society in society %}
         {% if society.logo %}
-          <a class="navbar-brand pb-4" href="{{ path('dashboard') }}" style="width:175px;"><img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid"  alt="logo"></a>
+            <div class="col-1">
+                <a class="navbar-brand " href="{{ path('dashboard') }}" style=""><img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-20"  alt="logo"></a>
+            </div>
         {% endif %}
 
         {% endfor %}
@@ -93,9 +95,9 @@
                   <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold m-0" data-toggle="modal" data-target="#modalCaisseForm" data-offset="80">
                     <i class="fas fa-plus blue-text mr-2"></i> Alimenter la caisse
                   </a>
-                  {# <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold m-0" data-offset="80" href="{{ path('etat') }}">
-                    <i class="fas fa-plus blue-text mr-2"></i> Etat Dubai
-                  </a> #}
+{#                  <a class="dropdown-item waves-effect waves-light indigo-text font-weight-bold m-0" data-offset="80" href="{{ path('etat') }}">#}
+{#                    <i class="fas fa-plus blue-text mr-2"></i> Etat Dubai#}
+{#                  </a>#}
                 {% endif %}
                 <hr class="dropdown-divider m-0 p-0">
 

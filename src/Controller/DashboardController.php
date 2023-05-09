@@ -321,6 +321,8 @@ class DashboardController extends AbstractController
         ]);
     }
 
+
+
     /**
      * @Route("/daysoperations", name="findetat")
      */
@@ -360,6 +362,26 @@ class DashboardController extends AbstractController
     {
         $status=$userRepository->getStatus();
         return new JsonResponse($status);
+    }
+
+    /**
+     * @Route("/etatdubai", name="etat")
+     */
+    public function EtatDubai(Request $request, AlimentationCaisseRepository $alimcaisse, UserRepository $userRepository,SocietyRepository $societyRepository, OperationsRepository $operationsRepository): Response
+    {
+        if ($request->get('agent')) {
+            $filterByAgent=$operationsRepository->FilterByAgent($request->get('agent'));
+            return new JsonResponse($filterByAgent);
+        }
+
+        return $this->render('dashboard/etatdubai.html.twig', [
+            'society' => $societyRepository->findAll(),
+            'operations'=>$operationsRepository->findBy(['type'=>"Lot Dubai", 'facture'=>'Ok'], ['id'=>'DESC']),
+            'user'=>$userRepository->findBy(
+                ['type'=>['Super', 'Administrateur', 'Checker', 'Headmaster', 'Agent'] ]
+            ),
+            'alimcaisse'=> $alimcaisse->findAll(),
+        ]);
     }
 
 }
