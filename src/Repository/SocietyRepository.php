@@ -19,6 +19,15 @@ class SocietyRepository extends ServiceEntityRepository
         parent::__construct($registry, Society::class);
     }
 
+    public function add(Society $entity, bool $flush = true): void
+    {
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
+
     // /**
     //  * @return Society[] Returns an array of Society objects
     //  */

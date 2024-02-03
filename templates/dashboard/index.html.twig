@@ -40,14 +40,15 @@
                                                 {% if is_granted('ROLE_ADMIN') %}
                                                     <option value="Admin">Administrateur</option>
                                                 {% endif %}
-                                                {# {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') %}
-                                                    <option value="Checker">Contrôleur</option>
-                                                {% endif %} #}
+
                                                 {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') %}
                                                     <option value="Headmaster">Chef d'agence</option>
+                                                    <option value="station-gerant">Gérant station</option>
+
                                                 {% endif %}
                                                 {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_CHECKER') or is_granted('ROLE_HEADMASTER') %}
                                                     <option value="Mod">Agent</option>
+                                                    <option value="station-agent">Agent de station</option>
                                                 {% endif %}
                                             </select>
                                         </div>
@@ -160,10 +161,11 @@
                                     <div class="mx-auto mb-3">
                                         <div class="md-form col-md-8 mx-auto">
                                               <select class="form-control md-form" name="" id="seletedCaisse">
-                                                <option disabled selected>Selectionnez la caisse</option>
-                                                <option value="FCFA">FCFA</option>
-                                                <option value="$">Dollar</option>
-                                                <option value="€">Euro</option>
+                                                  <option disabled selected>Selectionnez la caisse</option>
+                                                  <option value="FCFA">FCFA</option>
+                                                  <option value="$">Dollar</option>
+                                                  <option value="€">Euro</option>
+                                                  <option value="caisseStation">Caisse de la station</option>
                                               </select>
                                             </div>
                                         </div>
@@ -195,12 +197,12 @@
                 <div class="">
                     <a  id="" class="btn btn-primary btn-md btn-rounded font-weight-bold" href="{{ path('findetat') }}" role="button">Etat du jour</a>
                 </div>
-                {# <div class="">
+                <div class="">
                     <a class="btn btn-indigo btn-md btn-rounded font-weight-bold" href="{{ path('operationlotdubai',{'transact':'Lot Dubai'}) }}">Caisse Dubai</a>
                 </div>
                 <div class="">
                     <a class="btn blue-gradient btn-rounded btn-md font-weight-bold text-center mx-auto" href="{{ path('operationlot',{'transact': 'Lot' }) }}">Gold</a>
-                </div> #}
+                </div>
                 <div class="">
                     <a class="btn btn-info btn-md btn-rounded font-weight-bold" href="{{ path('operationechange',{'transact':'FD'}) }}">Achat <i class="fas fa-arrow-alt-circle-right"></i> Dollar</a>
                 </div>
@@ -578,16 +580,28 @@
                     $('#upcaisse').append($('#caisse_caisse').attr('hidden',false));
                     $('#caisse_dollar').attr('hidden',true);
                     $('#caisse_euro').attr('hidden',true);
+                    $('#caisse_caisseStation').attr('hidden',true);
+
                 }
                 else if(selected === "$"){
                     $('#upcaisse').append($('#caisse_dollar').attr('hidden',false));
                     $('#caisse_caisse').attr('hidden',true);
                     $('#caisse_euro').attr('hidden',true);
+                    $('#caisse_caisseStation').attr('hidden',true);
+
                 }
                 else if(selected === "€"){
                     $('#upcaisse').append($('#caisse_euro').attr('hidden',false));
                     $('#caisse_caisse').attr('hidden',true);
                     $('#caisse_dollar').attr('hidden',true);
+                    $('#caisse_caisseStation').attr('hidden',true);
+
+                }
+                else if(selected === "caisseStation"){
+                    $('#upcaisse').append($('#caisse_caisseStation').attr('hidden',false));
+                    $('#caisse_caisse').attr('hidden',true);
+                    $('#caisse_dollar').attr('hidden',true);
+                    $('#caisse_euro').attr('hidden',true);
                 }
                 else {
                     return false;

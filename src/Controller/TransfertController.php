@@ -11,6 +11,7 @@ use App\Repository\AgencyRepository;
 use App\Repository\SocietyRepository;
 use App\Repository\TransfertRepository;
 use App\Repository\UserRepository;
+use App\Service\WhatsAppService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,12 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TransfertController extends AbstractController
 {
-    
+    private WhatsAppService $whatsAppService;
+
+    public function __construct(WhatsAppService $whatsAppService)
+    {
+        $this->whatsAppService = $whatsAppService;
+    }
 
     /**
      * @Route("/new", name="transfert")
@@ -45,6 +51,7 @@ class TransfertController extends AbstractController
             $client=$userRepository->findOneBy(['id'=>$request->get('id'), 'username'=>$request->get('cl')]);
             $clientcaisse=$client->getSolde();
         }
+
         elseif (!$request->get('id') && !$request->get('cl')) {
             $client=false;
             $clientcaisse=false;
@@ -56,7 +63,8 @@ class TransfertController extends AbstractController
         }
         
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) { 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $secretCodeId = generateCode(10);
             if ($this->getUser()->getAgency()) {
                 $agencysender=$agencyRepository->findOneBy(['name'=>$this->getUser()->getAgency()->getName()]);
             }else{
@@ -64,6 +72,8 @@ class TransfertController extends AbstractController
             }
             
             if ($client){
+
+
                 $transfert->setClient($client);
                 $clientcaisse-=$transfert->getMontant();
                 $client->setSolde($clientcaisse);
@@ -115,7 +125,15 @@ class TransfertController extends AbstractController
                     }
                    
                 }
-  
+                $bodyClientInDatabase="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA. 
+                    Nouveau solde: $clientcaisse FCFA.  
+                    Bien à vous ".$client->getFullname().". DIALLO - SERVICE";
+
+                $bodyDestinataire="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA. 
+                    Code de retrait: $secretCodeId`.  
+                    Bien à vous ".`{$transfert->getDestinataire()}`.". DIALLO - SERVICE";
+                $this->whatsAppService->sendMessage($client->getTel(), $bodyClientInDatabase, "DIALLO SERVICE");
+                $this->whatsAppService->sendMessage($transfert->getTel(), $bodyDestinataire, "DIALLO SERVICE");
             }
             elseif(!$client) {
                 $client=false;
@@ -155,22 +173,32 @@ class TransfertController extends AbstractController
                                 $s->setCaisse($caisse);
                             }
                         }
-                        
                     }
                 }
+                $bodyDestinateur="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA.".
+                    "A : `{$transfert->getDestinataire()}` FCFA".
+                    "Bien à vous ".`{$transfert->getDestinateur()}`.". DIALLO - SERVICE";
+
+                $bodyDestinataire="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA. 
+                    Code de retrait: $secretCodeId.  
+                    Bien à vous ".`{$transfert->getDestinataire()}`.". DIALLO - SERVICE";
+                $this->whatsAppService->sendMessage($transfert->getTelsender(), $bodyDestinateur, "DIALLO SERVICE");
+                $this->whatsAppService->sendMessage($transfert->getTel(), $bodyDestinataire, "DIALLO SERVICE");
             }
-            else{
+            else {
                 $this->addFlash("error", "Attention ce client n'existe pas!");
                 return $this->redirectToRoute('dashboard');
             }
             $transfert->setAgent($this->getUser()->getFullname());
-            $transfert->setSecretid(generateCode(10));
+            $transfert->setSecretid($secretCodeId);
             $transfert->setSentAt(new \DateTimeImmutable());
             $transfert->setTransagency($transfert->getTransagency());
             
             // dd($transfert);
             $this->getDoctrine()->getManager()->persist($transfert);
             $this->getDoctrine()->getManager()->flush();
+            if ($client)
+
             $this->addFlash("success", "Le transfert d'argent a été effectué avec succès.");
             return $this->redirectToRoute('sent',['id'=> $transfert->getId()],Response::HTTP_SEE_OTHER);
 

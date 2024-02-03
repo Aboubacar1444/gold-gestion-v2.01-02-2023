@@ -11,10 +11,10 @@ class WhatsAppService
 
 
 
-    public function sendMessage (String $to, String $body){
+    public function sendMessage (String $to, String $body, string $referenceId = ""){
         $client = new WhatsAppApi($this->token, $this->instance_id);
         $messageBody = $body;
-        return $client->sendChatMessage($to, $messageBody);
+        return $client->sendChatMessage($to, $messageBody, 5, $referenceId);
     }
 
 

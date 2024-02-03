@@ -109,10 +109,9 @@ class OperationsRepository extends ServiceEntityRepository
         $em = $this->getEntityManager()->getConnection();
 
         $req= " SELECT * FROM operations WHERE agent = ? AND type ='Lot Dubai' AND facture ='Ok' ORDER BY id DESC";
-        $em->prepare($req);
-        $em->executeQuery(array($agent));
+
        
-        return $em->fetchAllAssociative($req,);
+        return $em->fetchAllAssociative($req, [$agent]);
     }
 
     public function DISTINCT($agency): array
@@ -120,10 +119,9 @@ class OperationsRepository extends ServiceEntityRepository
         $em = $this->getEntityManager()->getConnection();
 
         $req= " SELECT DISTINCT * FROM operations WHERE facture = 'Ok' AND agency_id is ? OR agency_id = ? GROUP BY numero ORDER BY id DESC";
-        $em->prepare($req);
-        $em->executeQuery([$agency,$agency]);
+
        
-        return $em->fetchAllAssociative();
+        return $em->fetchAllAssociative($req, [$agency,$agency]);
 
     }
 

@@ -1,0 +1,84 @@
+{% extends 'base-station.html.twig' %}
+
+
+{% block body %}
+
+    <h1 class="text-uppercase text-center">{{ agent.fullName }}</h1>
+    <hr>
+    <div class="card">
+        <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" >
+                        <tbody>
+                            <tr>
+                                <th>Id</th>
+                                <td>{{ agent.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nom complet</th>
+                                <td>{{ agent.fullName }}</td>
+                            </tr>
+                            <tr>
+                                <th>Identifiant de connexion</th>
+                                <td>{{ agent.userIdentifier }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>Numero de telephone</th>
+                                <td>{{ agent.tel }}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h1 class="text-uppercase text-center">Detail activité  {{ agent.fullName }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <div id="example2_wrapper" class=" dataTables_wrapper dt-bootstrap5">
+                <div class="table-responsive">
+                    <table class="table" id="exemple2">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Litre</th>
+                            <th>Type de carburant</th>
+{#                            <th>Prix Unitaire</th>#}
+                            <th>Prix</th>
+                            <th>Date d'achat</th>
+                            <th>Date d'enregistrement</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for agentActivity in sellCarburant %}
+                            <tr>
+                                <td>{{ agentActivity.id }}</td>
+                                <td>{{ agentActivity.litre }}</td>
+                                <td>{{ agentActivity.typeCarburant }}</td>
+{#                                <td>{{ agentActivity.prixUnitaire }}</td>#}
+                                <td>{{ agentActivity.prix }}</td>
+                                <td>{{ agentActivity.BuyAt|date('d-m-Y H:s') }}</td>
+                                <td>{{ agentActivity.createdAt|date('d-m-Y H:s') }}</td>
+
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7">no records found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="{{ path('app_station_employee_index') }}">Retour à la liste</a>
+
+    <a href="{{ path('app_station_employee_edit', {'id': agent.id}) }}">Mise à jour</a>
+
+    {{ include('station-dashboard/employe_management/_delete_form.html.twig') }}
+{% endblock %}

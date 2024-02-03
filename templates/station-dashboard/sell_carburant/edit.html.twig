@@ -1,0 +1,16 @@
+{% extends 'base-station.html.twig' %}
+
+
+{% block body %}
+<div class="card ">
+    <div class="card-body ">
+    <h1 class="text-center text-uppercase">Mise à jour -  Vente Carburant</h1>
+
+    {{ include('station-dashboard/sell_carburant/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_sell_carburant_index') }}">Retour à la liste</a>
+
+    {{ include('station-dashboard/sell_carburant/_delete_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}

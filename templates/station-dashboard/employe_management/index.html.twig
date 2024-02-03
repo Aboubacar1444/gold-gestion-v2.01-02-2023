@@ -1,0 +1,52 @@
+{% extends 'base-station.html.twig' %}
+
+
+{% block body %}
+
+    <h1 class="text-uppercase text-center">Gestion - Personnel</h1>
+    <hr>
+    <div class="card">
+        <div class="card-body">
+            <div id="example2_wrapper" class=" dataTables_wrapper dt-bootstrap5">
+                <div class="table-responsive">
+                    <table class="table" id="exemple2">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>FullName</th>
+                            <th>Identiant de connexion</th>
+                            <th>Numero de telephone</th>
+                            <th>actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in agents %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.fullName }}</td>
+                                <td>{{ user.userIdentifier }}</td>
+                                <td>{{ user.tel }}</td>
+                                <td>
+                                    <a href="{{ path('app_station_employee_show', {'id': user.id}) }}">Detail</a>
+                                    <a href="{{ path('app_station_employee_edit', {'id': user.id}) }}">Modifier</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7">no records found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <a href="{{ path('app_station_employee_new') }}">Nouvel agent</a>
+{% endblock %}
+
+
+
+

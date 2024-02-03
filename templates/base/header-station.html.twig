@@ -1,0 +1,132 @@
+<header class="top-header">
+    <nav class="navbar navbar-expand align-items-center justify-content-between gap-3">
+            <div class="btn-toggle">
+                <a href="#offcanvasPrimaryMenu" data-bs-toggle="offcanvas"><i class="material-icons-outlined">menu</i></a>
+            </div>
+
+            <ul class="navbar-nav gap-1 nav-right-links align-items-center">
+                {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SOUS_ADMIN") or is_granted("ROLE_STATION_GERANT") %}
+                <li class="nav-item">
+
+                    <h4 class="mb-0 fw-bold ">
+                        <i class="fadeIn animated bx bx-money "></i>
+                        {{ caisseStation }} FCFA
+                   </h4>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    <aside class="mini-sidebar d-flex align-items-center flex-column justify-content-between">
+        <div class="user">
+            <a href="#offcanvasUserDetails" data-bs-toggle="offcanvas" class="user-icon">
+                <i class="material-icons-outlined">account_circle</i>
+            </a>
+        </div>
+        <div class="quick-menu ps ps--active-x">
+            <nav class="nav flex-column gap-1">
+                <a class="nav-link" href="{{ path('app_station_dashboard') }}"><i class="material-icons-outlined">home</i></a>
+                <a class="nav-link" href="{{ path('dashboard') }}"><i class="fa-2x fadeIn animated bx bx-spreadsheet"></i></a>
+                <a class="nav-link" href="{{ path('app_fournisseur_index') }}"><i class="fa-2x fadeIn animated bx bx-folder-open"></i></a>
+                <a class="nav-link" href="{{ path('app_station_employee_index') }}"><i class="fa-2x material-icons-outlined">person</i></a>
+                <a class="nav-link" href={{ path('app_buy_carburant_index') }}><i class="material-icons-outlined">join_right</i></a>
+                <a class="nav-link" href="{{ path('app_sell_carburant_index') }}"><i class="fa-2x fadeIn animated bx bx-gas-pump"></i></a>
+            </nav>
+            <div class="ps__rail-x" style="width: 45px; left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 22px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></div>
+        <div class="mini-footer dark-mode">
+{#            <a href="javascript:;" class="footer-icon dark-mode-icon">#}
+{#                <i class="material-icons-outlined">dark_mode</i>#}
+{#            </a>#}
+        </div>
+    </aside>
+
+    <div class="offcanvas offcanvas-start w-260" data-bs-scroll="true" tabindex="-1" id="offcanvasPrimaryMenu">
+        <div class="offcanvas-header border-bottom h-70">
+            <img src="/station/assets/images/logo1.png" width="160" alt="">
+            <a href="javascript:;" class="primaery-menu-close" data-bs-dismiss="offcanvas">
+                <i class="material-icons-outlined">close</i>
+            </a>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="sidebar-nav mm-active">
+                <ul class="metismenu mm-show" id="sidenav">
+
+                    <li class="">
+                        <a href="{{ path('app_station_dashboard') }}" class="">
+                            <div class="parent-icon"><i class="material-icons-outlined">home</i>
+                            </div>
+                            <div class="menu-title">GESTION-STATION</div>
+                        </a>
+                    </li>
+                    <hr>
+                    {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SOUS_ADMIN")  %}
+                    <li class="menu-label">EASYGOLD</li>
+                    <li>
+                        <a href="{{ path('dashboard') }}">
+                            <div class="parent-icon"><i class="fadeIn animated bx bx-spreadsheet"></i>
+                            </div>
+                            <div class="menu-title">Panel</div>
+                        </a>
+                    </li>
+                        <hr>
+                    {% endif %}
+
+                    <li class="menu-label">GESTIONS</li>
+                    {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SOUS_ADMIN") or is_granted("ROLE_STATION_GERANT")  %}
+                    <li>
+                        <a href="{{ path('app_fournisseur_index') }}">
+                            <div class="parent-icon">
+                                <i class="fadeIn animated bx bx-folder-open"></i>
+                            </div>
+                            <div class="menu-title">Fournisseurs</div>
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a href="{{ path('app_station_employee_index') }}">
+                            <div class="parent-icon">
+                                <i class="material-icons-outlined">person</i>
+                            </div>
+                            <div class="menu-title">Personnel</div>
+                        </a>
+                    </li>
+                    <hr>
+                    <li>
+                        <a href="{{ path('app_buy_carburant_index') }}">
+                            <div class="parent-icon">
+                                <i class="material-icons-outlined">join_right</i>
+                            </div>
+                            <div class="menu-title">Achat de Carburant</div>
+                        </a>
+                    </li>
+                    <hr>
+                    {% endif %}
+                    <li>
+                        <a href="{{ path('app_sell_carburant_index') }}">
+                            <div class="parent-icon"><i class="fadeIn animated bx bx-gas-pump"></i>
+                            </div>
+                            <div class="menu-title">Vente de Carburant</div>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="offcanvas-footer p-3 border-top h-70">
+{#            <div class="form-check form-switch">#}
+{#                <input class="form-check-input" type="checkbox" role="switch" id="DarkMode">#}
+{#                <label class="form-check-label" for="DarkMode">Dark Mode</label>#}
+{#            </div>#}
+        </div>
+    </div>
+
+
+{#            {% for messagee in app.flashes('error') %}#}
+{#                <div class="alert alert-danger alert-dismissible fade show justify-content-center" role="alert">#}
+{#                    <strong> {{ messagee }} </strong>#}
+{#                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">#}
+{#                    <span aria-hidden="true">&times;</span>#}
+{#                    </button>#}
+{#                </div>#}
+{#            {% endfor %}#}
+
+</header>

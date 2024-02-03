@@ -7,8 +7,7 @@
          <div class="row">
             <button class="btn btn-outline-warning btn-sm btn-rounded col-md-1 mx-auto font-weight-bold" hidden id="prev"> <i class="fas fa-arrow-alt-circle-left fa-3x"></i></button>
             <button class="btn btn-outline-warning btn-sm btn-rounded col-md-1 mx-auto font-weight-bold" hidden id="next"> <i class="fas fa-arrow-alt-circle-right fa-3x"></i></button>
-        </div>
-        <div class="row mask">
+        </div><div class="row mask">
             <h3 class="mx-auto font-weight-bolder pt-4 pr-0"> <u>Client</u></h3>
             {{ form_start(form, {'attr':{'id':'operation'}}) }}
             <div class="row text-black-50 mr-auto" >
@@ -533,7 +532,7 @@
                 poideau=$(this).val();
                 densite=$('#operation_temp_densite').val(parseFloat(poidair/poideau).toFixed(2));
                 carat=getKarat(parseFloat(densite.val()));
-                $('#operation_temp_karat').val((carat).toFixed(2));
+                $('#operation_temp_karat').val(parseFloat(carat).toFixed(2));
 
                 prixu=parseFloat((base/24)*carat).toFixed(2);
                 $('#operation_temp_prixu').val(prixu);
@@ -577,11 +576,13 @@
                 
                 $.ajax({
                     url:url,
-                    method:"POST",
+                    method:method,
+                    type:method,
                     data:new FormData(this),
-                    contentType:false,
-                    cache:false,
-                    processData:false,
+                    dataType:'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
                     beforeSend:function(){
                         $('#import').attr('disabled', 'disabled');
                         $('#import').text('En cours...');
@@ -589,6 +590,7 @@
                     success:function(response)
                     {
                         $('#operation').trigger("reset");
+                        console.log(response)
                         if(response[5]){
                             $('#prevId').val(response[5])
                         }
@@ -601,14 +603,17 @@
                         link="{{ path('facturationtemp', {'id':'idd', 'type':'typee', 'base':'basee', 'date':'datee'}) }}";
                         a=link.replace('idd', response[0]);
                         b=a.replace('typee', response[1]);
-                        
+
                         c=b.replace('basee', response[2]);
                         d=c.replace('datee', response[3]);
                         $('#print').attr("href", d);
                         $('#print').show('fast');
+                    },
+                    error: function (error){
+                        console.log(error);
                     }
                 })
-                
+
             });
             i=1;
             $('#operation_temp_tempclient').keyup(function(){

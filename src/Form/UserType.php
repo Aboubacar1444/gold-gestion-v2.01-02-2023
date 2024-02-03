@@ -18,28 +18,28 @@ class UserType extends AbstractType
     {
         $builder
             ->add('fullname',TextType::class,[
-                'label'=>false,
+                'label'=>'Nom complet',
                 'attr'=>[
                     'placeholder'=>"Prénom & Nom"
                 ]
             ])
             ->add('username', TextType::class,[
-                'label'=>false,
+                'label'=>'Identifiant de connexion',
                 'attr'=>[
                     'placeholder'=>"Pseudo de connexion"
                 ]
             ])
             ->add('tel', TextType::class,[
-                'label'=>false,
+                'label'=>'Numéro de téléphone',
                 'attr'=>[
                     'placeholder'=>"Numéro de téléphone"
                 ]
             ])
-            
             ->add('password', RepeatedType::class,[
+
                 'type'=> PasswordType::class,
-                'first_options'  => array('label' =>false, 'attr'=>['placeholder'=>'Mot de passe']),
-                'second_options' => array('label' =>false, 'attr'=>['placeholder'=>'Répéter le mot de passe']),
+                'first_options'  => array('label' =>'Mot de passe', 'attr'=>['placeholder'=>'Mot de passe']),
+                'second_options' => array('label' =>'Repeter le mot de passe', 'attr'=>['placeholder'=>'Répéter le mot de passe']),
                 'attr'=>[
                     'class'=>'md-form'
                 ]

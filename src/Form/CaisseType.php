@@ -45,6 +45,17 @@ class CaisseType extends AbstractType
                 'empty_data'=>0,
                 'required'=>false,
             ])
+
+            ->add('caisseStation',TextType::class,[
+                'label'=>false,
+                'attr'=>[
+                    'placeholder'=>"Montant à ajouter à la caisse de la station",
+                    'class'=>'md-form',
+                    'hidden'=>'hidden',
+                ],
+                'empty_data'=>0,
+                'required'=>false,
+            ])
             
         ;
     }

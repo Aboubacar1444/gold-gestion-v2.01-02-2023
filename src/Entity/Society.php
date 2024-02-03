@@ -63,6 +63,11 @@ class Society
      */
     private $email;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $caisseStation;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -172,6 +177,18 @@ class Society
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getCaisseStation(): ?float
+    {
+        return $this->caisseStation;
+    }
+
+    public function setCaisseStation(?float $caisseStation): self
+    {
+        $this->caisseStation = $caisseStation;
 
         return $this;
     }

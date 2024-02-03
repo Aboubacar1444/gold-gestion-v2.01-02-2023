@@ -1,0 +1,225 @@
+{% extends "base-station.html.twig" %}
+
+{% block body %}
+
+    <!--breadcrumb-->
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3 mx-auto">
+        <div class="breadcrumb-title pe-3 text-center mx-auto">
+            <h1 class="h1-responsive text-center">
+                DIALLO SERVICE
+                <i class="bx bx-home-alt"></i>
+            </h1>
+        </div>
+    </div>
+    <hr>
+    <!--end breadcrumb-->
+
+    <div class="row mx-auto mb-3">
+        <div class="card col-md-12 p-2 ">
+            <div class="card-body mx-auto p-3 text-center">
+                <h5>Etat du jour Vente carburant</h5>
+                <hr>
+                <div id="table1_wrapper" class="dataTables_wrapper dt-bootstrap5">
+                    <div class="table-responsive">
+                        <table class="table" id="table1" >
+                            <thead>
+                            <tr>
+                                <th>Id#</th>
+                                <th>Litre</th>
+                                <th>Type de carburant</th>
+                                <th>Prix</th>
+                                <th>Agent</th>
+                                <th>Type de véhicule</th>
+                                <th>Date d'achat</th>
+                                <th>Date d'enregistrement</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for sell in sellCarburants %}
+                                <tr>
+                                    <td>{{ sell.id }}</td>
+                                    <td>{{ sell.litre }}</td>
+                                    <td>{{ sell.typeCarburant }}</td>
+                                    <td class="sellPrice" id="dtInvoices">{{ sell.prix }}</td>
+                                    <td>{{ sell.agent }}</td>
+                                    <td>{{ sell.clientVehicule }}</td>
+                                    <td>{{ sell.buyAt|date('d-m-Y H:i:s')  }}</td>
+                                    <td>{{ sell.createdAt|date('d-m-Y H:i:s')  }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <td colspan="8" id="totalPriceSell">
+                                TOTAL
+                            </td>
+                            </tfoot>
+                        </table>
+                        <form method="get" class="form-inline card mb-3">
+                            <div class="row form-inline card-body-cascade ">
+                                <h6>Recherche entre deux dates</h6>
+                                <div class="col-md-6">
+                                    Prémière date
+                                    <input type="datetime-local" class="form-control col-md-6" name="firstDate" required/>
+                                </div>
+                                <div class="col-md-6">
+                                    Deuxième date
+                                    <input type="datetime-local" class="form-control col-md-6" name="secondDate" required/>
+                                </div>
+                                <div class="col-md-6 mx-auto my-2 ">
+                                    <button type="submit" class="btn btn-outline-info px-4 d-flex gap-2 col-md-6 text-center mx-auto">
+                                        <i class="material-icons-outlined">search</i>Rechercher
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SOUS_ADMIN') or is_granted('ROLE_STATION_GERANT') %}
+        <div class="row mx-auto mb-3">
+            <div class="card col-md-12 p-2 ">
+                <div class="card-body mx-auto p-3 text-center">
+                    <h5>Etat du jour Achat carburant</h5>
+                    <hr>
+                    <div id="table1_wrapper" class="dataTables_wrapper dt-bootstrap5">
+                        <div class="table-responsive">
+                            <table class="table" id="table1" >
+                                <thead>
+                                <tr>
+                                    <th>Id#</th>
+                                    <th>Litre</th>
+                                    <th>Type de carburant</th>
+                                    <th>Prix</th>
+                                    <th>Fournisseur</th>
+                                    <th>Enregistré par </th>
+                                    <th>Date d'achat</th>
+                                    <th>Date d'enregistrement</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for buy in buyCarburants %}
+                                    <tr>
+                                        <td>{{ buy.id }}</td>
+                                        <td>{{ buy.litre }}</td>
+                                        <td>{{ buy.typeCarburant }}</td>
+                                        <td class="buyPrice">{{ buy.prix }}</td>
+                                        <td>{{ buy.fournisseur }}</td>
+                                        <td>{{ buy.user }}</td>
+                                        <td>{{ buy.buyAt|date('d-m-Y H:i:s')  }}</td>
+                                        <td>{{ buy.createdAt|date('d-m-Y H:i:s')  }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">no records found</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <td colspan="8" id="totalPriceBuy">
+                                    TOTAL
+                                </td>
+                                </tfoot>
+                            </table>
+                            <form method="get" class="form-inline card mb-3">
+                                <div class="row form-inline card-body-cascade ">
+                                    <h6>Recherche entre deux dates</h6>
+                                    <div class="col-md-6">
+                                        Prémière date
+                                        <input type="datetime-local" class="form-control col-md-6" name="firstDate" required/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        Deuxième date
+                                        <input type="datetime-local" class="form-control col-md-6" name="secondDate" required/>
+                                    </div>
+                                    <div class="col-md-6 mx-auto my-2 ">
+                                        <button type="submit" class="btn btn-outline-info px-4 d-flex gap-2 col-md-6 text-center mx-auto">
+                                            <i class="material-icons-outlined">search</i>Rechercher
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    {% endif %}
+
+    {% block ScriptP %}
+        <script>
+            $(function () {
+                    'use strict'
+                    var table1 = $('#table1').DataTable( {
+                        lengthChange: false,
+                        buttons: [ 'copy', 'excel', 'pdf', 'print'],
+                    });
+                    table1.buttons().container()
+                        .appendTo( '#table1_wrapper .col-md-6:eq(0)' );
+
+                    var table2 = $('#table2').DataTable( {
+                        lengthChange: false,
+                        buttons: [ 'copy', 'excel', 'pdf', 'print']
+                    } );
+                    table2.buttons().container()
+                        .appendTo( '#table2_wrapper .col-md-6:eq(0)' );
+
+                    var totalPrice = 0;
+                    var price = 0
+
+                    var totalPriceBuy = 0;
+                    var priceBuy = 0
+                    // Calculate when table data onLoading. //
+
+                    $(".sellPrice").each(function() {
+
+                        price  += parseFloat( $(this).text() ).toFixed(2);
+                        totalPrice += parseFloat(price);
+                    })
+
+                    $(".buyPrice").each(function() {
+
+                        priceBuy  += parseFloat( $(this).text() ).toFixed(2);
+                        totalPriceBuy += parseFloat(price);
+                    })
+
+               // Recalculate when table data change. //
+                    table1.on("search", function () {
+                        price = 0
+                        totalPrice = 0;
+                        $(".sellPrice").each(function() {
+                            price  += parseFloat( $(this).text() ).toFixed(2);
+                            totalPrice += parseFloat(price);
+                        })
+                        $("#totalPriceSell").text("Total: " + number_format(totalPrice)+ " FCFA" );
+                    });
+                    table2.on("search", function () {
+                        priceBuy = 0
+                        totalPriceBuy = 0;
+                        $(".buyPrice").each(function() {
+                            price  += parseFloat( $(this).text() ).toFixed(2);
+                            totalPrice += parseFloat(price);
+                        })
+                        $("#totalPriceSell").text("Total: " + number_format(totalPrice)+ " FCFA" );
+                    });
+                $("#totalPriceSell").text("Total: " + number_format(totalPrice)+ " FCFA" );
+                $("#totalPriceBuy").text("Total: " + number_format(totalPriceBuy)+ " FCFA" );
+
+
+            });
+        </script>
+    {% endblock %}
+
+
+{% endblock %}
+

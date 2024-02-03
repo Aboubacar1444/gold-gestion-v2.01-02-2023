@@ -96,8 +96,8 @@ class OperationController extends AbstractController
      */
     public function UpdateOperation(Request $request, OperationsRepository $operationsRepository, SocietyRepository $societyRepository): Response
     {
-        $em= $this->getDoctrine()->getManager();
-        $op=$operationsRepository->findOneBy(['id'=>$request->get('id')]);
+        $em = $this->getDoctrine()->getManager();
+        $op = $operationsRepository->findOneBy(['id'=>$request->get('id')]);
         if (!$op) {
             $this->addFlash("error", "Attention cette operation n'existe pas!");
             return $this->redirectToRoute('dashboard');
@@ -166,11 +166,11 @@ class OperationController extends AbstractController
         
         $operations=$operationsRepository->findBy(
             ['client'=>$user, 'type'=>$type, 'base'=>$base, 'createdAt'=>$date, 'facture'=>null],
-            ['createdAt'=>'ASC'],
+            ['createdAt'=>'ASC']
         );
         $recu=$operationsRepository->findOneBy(
             ['client'=>$user, 'type'=>$type, 'createdAt'=>$date, 'facture'=>null],
-            ['createdAt'=>'ASC'],
+            ['createdAt'=>'ASC']
         );
         
         $setnumero=$operationsRepository->setNumero($type);
@@ -246,7 +246,7 @@ class OperationController extends AbstractController
                         $user->setSolde($solde);
                         $body="$type Or "." Nº$numero, Total: $total. FCFA. 
                                 Nouveau solde: $solde FCFA.  
-                                Bien à vous ".$user->getFullname().". Ceci est un TEST de lapplication EASYGOLD";
+                                Bien à vous ".$user->getFullname().". DIALLO - SERVICE";
 
 
                     }
@@ -261,7 +261,7 @@ class OperationController extends AbstractController
                         $user->setSolde($solde);
                         $body="$type Or "." Nº$numero, Total: $total. FCFA. 
                                 Nouveau solde: $solde FCFA.  
-                                Bien à vous ".$user->getFullname().". Ceci est un TEST de lapplication EASYGOLD";
+                                Bien à vous ".$user->getFullname().". DIALLO - SERVICE";
 
                     }   
                 }
@@ -325,7 +325,7 @@ class OperationController extends AbstractController
                     $em->flush();
                     $body=" Reçu de votre $type"." Nº$numero de $montant FCFA.  
                             Motif:". $recu->getMotif(). "
-                            Solde actuel: $solde. Bien à vous ".$user->getFullname().". Ceci est un TEST de lapplication EASYGOLD";
+                            Solde actuel: $solde. Bien à vous ".$user->getFullname().". DIALLO - SERVICE";
 
                     $whatsAppService->sendMessage($user->getTel(), $body);
 
@@ -373,10 +373,10 @@ class OperationController extends AbstractController
         
         $operations=$operationsRepository->findBy(
             ['client'=>$user, 'type'=>$type, 'base'=>$base, 'createdAt'=>$date, 'facture'=>'Ok'],
-            ['createdAt'=>'ASC'],
+            ['createdAt'=>'ASC']
         );
         $recu=$operationsRepository->findOneBy(
-            ['client'=>$user, 'type'=>$type, 'createdAt'=>$date, 'facture'=>'Ok', 'numero'=>$request->get('numero')],
+            ['client'=>$user, 'type'=>$type, 'createdAt'=>$date, 'facture'=>'Ok', 'numero'=>$request->get('numero')]
         );
         
         /* Calcule plus enregistrement */
@@ -437,6 +437,7 @@ class OperationController extends AbstractController
        
             if ($form->isSubmitted() && $form->isValid()) { 
                 $operation=$form->getData();
+
                 $operation->setCreatedAt(new \DateTime(date('Y-m-d')));
                 $operation->setTime(date('H:i:s'));
                 $operation->setAgent($this->getUser()->getFullname());
@@ -445,8 +446,11 @@ class OperationController extends AbstractController
                 }
                 $operation->setType($transact);
                 $em->persist($operation);
-                $em->flush();
-                return new JsonResponse([ $operation->getTempclient(), $operation->getType(), $operation->getBase(),  date_format($operation->getCreatedAt(), 'Y-m-d 00:00:00'), $operation->getTel() ]);
+//                $em->flush();
+                return $this->json([
+                    $operation->getTempclient(), $operation->getType(), $operation->getBase(),  date_format($operation->getCreatedAt(), 'Y-m-d 00:00:00'), $operation->getTel()
+                ]);
+//                return new JsonResponse([ $operation->getTempclient(), $operation->getType(), $operation->getBase(),  date_format($operation->getCreatedAt(), 'Y-m-d 00:00:00'), $operation->getTel() ]);
             }
             
         
@@ -530,20 +534,21 @@ class OperationController extends AbstractController
         $date=$request->get('date');
         $id=$request->get('id');
         $user=$operationsRepository->findOneBy(
-            ['tempclient'=>$id],
+            ['tempclient'=>$id]
         );
         $date=new \DateTime($date);
         
         
         $operations=$operationsRepository->findBy(
             ['tempclient'=>$id, 'type'=>$type, 'base'=>$base, 'createdAt'=>$date, 'facture'=>null],
-            ['createdAt'=>'ASC'],
+            ['createdAt'=>'ASC']
         );
         
         
         $setnumero=$operationsRepository->setNumero($type);
-        
+        $numero = 1;
         /* Attribution de numero de facture ou reçu */
+
         if($setnumero){
             foreach ($setnumero as $k) {
                 $numero=$k["numero"];
@@ -554,7 +559,9 @@ class OperationController extends AbstractController
                 foreach ($operations as $v) {
                     $numero=$v->getNumero();
                     $numero+=1;
+
                 }
+                dd($numero);
             }
         }
         /* Calcule plus enregistrement */
@@ -612,7 +619,7 @@ class OperationController extends AbstractController
                         {
                             $caisse=$caisse - $total;
                             $s->setCaisse($caisse);
-                        }      
+                        }
                     }
                     elseif ($type == "Vente") {
                         
@@ -669,17 +676,17 @@ class OperationController extends AbstractController
         $id=$request->get('id');
         $date=new \DateTime($date);
         $user=$operationsRepository->findOneBy(
-            ['tempclient'=>$id],
+            ['tempclient'=>$id]
         );
         
         $operations=$operationsRepository->findBy(
             ['tempclient'=>$id, 'type'=>$type, 'base'=>$base, 'createdAt'=>$date, 'facture'=>'Ok'],
-            ['createdAt'=>'DESC'],
+            ['createdAt'=>'DESC']
         );
         if ($type == "Dépôt" || $type == "Rétrait") {
             $operations=$operationsRepository->findOneBy(
                 ['tempclient'=>$id, 'type'=>$type, 'base'=>$base, 'createdAt'=>$date, 'facture'=>'Ok'],
-                ['createdAt'=>'DESC'],
+                ['createdAt'=>'DESC']
             ); 
             $barre = false; 
         }else{
@@ -869,7 +876,7 @@ class OperationController extends AbstractController
         $date=$request->get('date');
         $date=new \DateTime($date);
         $recu=$operationsRepository->findOneBy(
-            ['tempclient'=>$id, 'type'=>$type, 'createdAt'=>$date, 'facture'=>null],
+            ['tempclient'=>$id, 'type'=>$type, 'createdAt'=>$date, 'facture'=>null]
         );
         
         $setnumero=$operationsRepository->setNumero($type);

@@ -1,0 +1,21 @@
+{{ form_start(form) }}
+<div class="row card p-4">
+    <div class="row mx-auto card-body">
+        <div class="col-md-6">
+            {{ form_row(form.fullname) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.username) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.tel) }}
+        </div>
+        {% if not app.request.get('_route') == "app_station_employee_edit" %}
+        <div class="col-md-6">
+            {{ form_row(form.password) }}
+        </div>
+        {% endif %}
+    <button class="btn">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+</div>
+{{ form_end(form) }}
