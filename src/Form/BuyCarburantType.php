@@ -60,6 +60,7 @@ class BuyCarburantType extends AbstractType
             ])
 
             ->add('fournisseur', EntityType::class, [
+                'class'=>'App\Entity\Fournisseur',
                 'label'=>"Fournisseur",
                 'attr'=>[
                     'class'=>'',
