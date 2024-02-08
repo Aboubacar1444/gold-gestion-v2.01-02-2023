@@ -65,7 +65,7 @@ class DashboardController extends AbstractController
                 $user->setRoles(['ROLE_HEADMASTER']);
                 $user->setType("Headmaster");
             }
-            elseif ($access=="station-headmaster") {
+            elseif ($access=="station-gerant") {
                 $user->setRoles(['ROLE_STATION_GERANT']);
                 $user->setType("station-gerant");
             }
