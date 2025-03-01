@@ -12,6 +12,7 @@ use App\Repository\SocietyRepository;
 use App\Repository\TransfertRepository;
 use App\Repository\UserRepository;
 use App\Service\WhatsAppService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,32 +21,31 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/transfert")
  * @IsGranted("ROLE_USER")
  */
+#[Route(path: '/transfert')]
 class TransfertController extends AbstractController
 {
     private WhatsAppService $whatsAppService;
 
-    public function __construct(WhatsAppService $whatsAppService)
+    public function __construct(WhatsAppService $whatsAppService, private EntityManagerInterface $em)
     {
         $this->whatsAppService = $whatsAppService;
     }
 
-    /**
-     * @Route("/new", name="transfert")
-     */
+    #[Route(path: '/new', name: 'transfert')]
     public function index(Request $request, AgencyRepository $agencyRepository, SocietyRepository $societyRepository, UserRepository $userRepository): Response
     {
-        function generateCode($limit){
+        function generateCode($limit): string
+        {
             $code = '';
             for($i = 0; $i < $limit; $i++) { $code .= mt_rand(1, 9); }
             return $code;
         }
         $society=$societyRepository->findAll();
-        
 
-        $transfert= new Transfert();
+
+        $transfert = new Transfert();
         if ($request->get('id') && $request->get('cl')) {
             $form = $this->createForm(TransfertcType::class, $transfert);
             $client=$userRepository->findOneBy(['id'=>$request->get('id'), 'username'=>$request->get('cl')]);
@@ -61,7 +61,7 @@ class TransfertController extends AbstractController
             $this->addFlash("error", "Attention ce client n'existe pas!");
             return $this->redirectToRoute('dashboard');
         }
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $secretCodeId = generateCode(10);
@@ -70,93 +70,28 @@ class TransfertController extends AbstractController
             }else{
                 $agencysender=false;
             }
-            
-            if ($client){
 
 
-                $transfert->setClient($client);
-                $clientcaisse-=$transfert->getMontant();
-                $client->setSolde($clientcaisse);
-                
-                if ($this->getUser()->getAgency()) {
-                    $agency=$this->getUser()->getAgency()->getName();
-                    $transagency=$agencysender->getCaisse();
-                    $transagency+=$transfert->getMontant();
-                    $transfert->setAgency($agency);
-                    $agencysender->setCaisse($transagency);
-                    foreach ($society as $s) {
-                        $caisse=$s->getCaisse();
-                        $caisse+=$transfert->getMontant();
-                        $s->setCaisse($caisse);
-                    }
-                }else{
-                    foreach ($society as $s) {
-                        $caisse=$s->getCaisse();
-                        $caisse+=$transfert->getMontant();
-                        $s->setCaisse($caisse);
-                    }
+            if($this->getUser()->getAgency()) {
+                $agency=$this->getUser()->getAgency()->getName();
+                $transagency=$agencysender->getCaisse();
+                $transagency+=$transfert->getMontant();
+                $agencysender->setCaisse($transagency);
+                $transfert->setAgency($agency);
+                foreach ($society as $s) {
+                    $caisse=$s->getCaisse();
+                    $caisse+=$transfert->getMontant();
+                    $s->setCaisse($caisse);
                 }
-                if ($transfert->getFrais() !== null) {
-                    $frais=$transfert->getFrais();
-                    if ($frais !== 0 ) {
-                        if($request->get('status')){
-                            $status=$request->get('status');
-                            $statusclient=$request->get('statusclient');
-                            if (!$statusclient) {
-                               $statusclient="NON"; 
-                            }
-                            $transfert->setPaid($status);
-                        }
-                        else {
-                            $status="NON";
-                            $transfert->setPaid($status);
-                        }
-                        if ($status == "OUI") {
-                            if ($statusclient == "OUI") {
-                                $clientcaisse-=$frais;
-                                $client->setSolde($clientcaisse);
-                            }
-                            foreach ($society as $s) {
-                                $caisse=$s->getCaisse();
-                                $caisse+=$frais;
-                                $s->setCaisse($caisse);
-                            }
-                        }
-                    }
-                   
+            }else{
+                foreach ($society as $s) {
+                    $caisse=$s->getCaisse();
+                    $caisse+=$transfert->getMontant();
+                    $s->setCaisse($caisse);
                 }
-                $bodyClientInDatabase="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA. 
-                    Nouveau solde: $clientcaisse FCFA.  
-                    Bien à vous ".$client->getFullname().". DIALLO - SERVICE";
-
-                $bodyDestinataire="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA. 
-                    Code de retrait: $secretCodeId`.  
-                    Bien à vous ".`{$transfert->getDestinataire()}`.". DIALLO - SERVICE";
-                $this->whatsAppService->sendMessage($client->getTel(), $bodyClientInDatabase, "DIALLO SERVICE");
-                $this->whatsAppService->sendMessage($transfert->getTel(), $bodyDestinataire, "DIALLO SERVICE");
             }
-            elseif(!$client) {
-                $client=false;
-                
-                if($this->getUser()->getAgency()) {
-                    $agency=$this->getUser()->getAgency()->getName();
-                    $transagency=$agencysender->getCaisse();
-                    $transagency+=$transfert->getMontant();
-                    $agencysender->setCaisse($transagency);
-                    $transfert->setAgency($agency);
-                    foreach ($society as $s) {
-                        $caisse=$s->getCaisse();
-                        $caisse+=$transfert->getMontant();
-                        $s->setCaisse($caisse);
-                    }
-                }else{
-                    foreach ($society as $s) {
-                        $caisse=$s->getCaisse();
-                        $caisse+=$transfert->getMontant();
-                        $s->setCaisse($caisse);
-                    }
-                }
-                if($transfert->getFrais() !== null) {
+            if ($transfert->getFrais() == null || $transfert->getFrais() == "") $transfert->setFrais(0);
+            if($transfert->getFrais() !== null) {
                     $frais=$transfert->getFrais();
                     if ($frais !== 0 ) {
                         if($request->get('status')){
@@ -174,45 +109,75 @@ class TransfertController extends AbstractController
                             }
                         }
                     }
-                }
-                $bodyDestinateur="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA.".
-                    "A : `{$transfert->getDestinataire()}` FCFA".
-                    "Bien à vous ".`{$transfert->getDestinateur()}`.". DIALLO - SERVICE";
+            }
 
-                $bodyDestinataire="Transfert d'argent "." Total: `{$transfert->getMontant()}`. FCFA. 
-                    Code de retrait: $secretCodeId.  
-                    Bien à vous ".`{$transfert->getDestinataire()}`.". DIALLO - SERVICE";
-                $this->whatsAppService->sendMessage($transfert->getTelsender(), $bodyDestinateur, "DIALLO SERVICE");
-                $this->whatsAppService->sendMessage($transfert->getTel(), $bodyDestinataire, "DIALLO SERVICE");
+
+
+            $transferDestination = $transfert->getTransagency()->getName();
+            if ($transferDestination == "CHINE") {
+                $amountToPaid = sprintf('%.3f', $transfert->getMontant() / 8.60);
+                $device = "FCFA";
+                $fraisDevice = "FCFA";
+                $amountToPaidDevice ="YEN";
+            }
+            elseif ($transferDestination == "MALI") {
+                $amountToPaid = sprintf('%.3f', $transfert->getMontant() * 8.60);
+                $device = "YEN";
+                $fraisDevice = "YEN";
+                $amountToPaidDevice ="FCFA";
             }
             else {
-                $this->addFlash("error", "Attention ce client n'existe pas!");
-                return $this->redirectToRoute('dashboard');
+                $amountToPaid = $transfert->getMontant();
+                $device = "FCFA";
+                $fraisDevice = "FCFA";
+                $amountToPaidDevice ="FCFA";
             }
-            $transfert->setAgent($this->getUser()->getFullname());
-            $transfert->setSecretid($secretCodeId);
-            $transfert->setSentAt(new \DateTimeImmutable());
-            $transfert->setTransagency($transfert->getTransagency());
-            
-            // dd($transfert);
-            $this->getDoctrine()->getManager()->persist($transfert);
-            $this->getDoctrine()->getManager()->flush();
-            if ($client)
+            $amountToPaid = (float) $amountToPaid;
 
-            $this->addFlash("success", "Le transfert d'argent a été effectué avec succès.");
-            return $this->redirectToRoute('sent',['id'=> $transfert->getId()],Response::HTTP_SEE_OTHER);
+            $bodyDestinateur = "Transfert d'argent -> `$transferDestination`. \n".
+                "Total:". "`{$transfert->getMontant()}`"." $device. \n".
+                "Frais: "."`{$transfert->getFrais()}`"." $fraisDevice. \n".
+//                    "Frais payé: "."`{$transfert->getPaid()}`".". \n".
+                "Montant à payer: "."`$amountToPaid`"." $amountToPaidDevice. \n".
+                "A : `{$transfert->getDestinataire()}` \n".
 
-        }
+                "Bien à vous "."`{$transfert->getDestinateur()}`".
+                ".\nTRAORE - SERVICE";
+
+            $bodyDestinataire = "Transfert d'argent -> `$transferDestination`. \n".
+                "Total: "."`{$transfert->getMontant()}`"." $device. \n".
+                "Frais: "."`{$transfert->getFrais()}`"." $fraisDevice. \n".
+//                "Frais payé à l'envoi: "."`{$transfert->getPaid()}`".". \n".
+                "Montant à payer: "."`$amountToPaid`"." $amountToPaidDevice. \n".
+                "Code de retrait: `$secretCodeId`. \n".
+                "Bien à vous "."`{$transfert->getDestinataire()}`".
+                ".\nTRAORE - SERVICE";
+
+            $this->whatsAppService->sendMessage($transfert->getTelsender(), $bodyDestinateur, "TRAORE SERVICE");
+            $this->whatsAppService->sendMessage($transfert->getTel(), $bodyDestinataire, "TRAORE SERVICE");
+
+                $transfert->setAgent($this->getUser()->getFullname());
+                $transfert->setSecretid($secretCodeId);
+                $transfert->setSentAt(new \DateTimeImmutable());
+                $transfert->setTransagency($transfert->getTransagency());
+
+                // dd($transfert);
+                $this->em->persist($transfert);
+                $this->em->flush();
+                if ($client) {
+                    $this->addFlash("success", "Le transfert d'argent a été effectué avec succès.");
+                }
+                return $this->redirectToRoute('sent',['id'=> $transfert->getId()],Response::HTTP_SEE_OTHER);
+
+            }
         return $this->render('transfert/index.html.twig', [
             'society' => $societyRepository->findAll(),
-            'form' => $form->createView(),  
-            'client'=>$client,          
+            'form' => $form->createView(),
+
         ]);
     }
-    /**
-     * @Route("/sent/{id}", name="sent")
-     */
-    public function sent(Request $request, Transfert $transfert, SocietyRepository $societyRepository): Response
+    #[Route(path: '/sent/{id}', name: 'sent')]
+    public function sent(Transfert $transfert, SocietyRepository $societyRepository): Response
     {
         return $this->render('transfert/sent.html.twig', [
             'society'=>$societyRepository->findAll(),
@@ -220,18 +185,14 @@ class TransfertController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/getagency/{id}", name="getagency")
-     */
-    public function getagency(Request $request, Agency $agency): Response
+    #[Route(path: '/getagency/{id}', name: 'getagency')]
+    public function getagency(Agency $agency): Response
     {
         $solde=$agency->getCaisse();
         return new JsonResponse($solde);
     }
 
-    /**
-     * @Route("/receive/{secretid}/{id}", name="receive")
-     */
+    #[Route(path: '/receive/{secretid}/{id}', name: 'receive')]
     public function receive(Request $request, Transfert $transfert, SocietyRepository $societyRepository): Response
     {
         $society=$societyRepository->findAll();
@@ -244,58 +205,78 @@ class TransfertController extends AbstractController
                 $agencycaisse-=$transfert->getMontant();
                 $transfert->getTransagency()->setCaisse($agencycaisse);
             }
-            
-            
+
+
             foreach ($society as $s) {
                 $caisse=$s->getCaisse();
                 $caisse-=$transfert->getMontant();
                 $s->setCaisse($caisse);
             }
-            if ($transfert->getClient()) {
-                if($transfert->getFrais() !== null) {
-                    $frais=$transfert->getFrais();
-                    if ($frais !== 0 ) {
-                        if($transfert->getPaid()){
-                          $status=$transfert->getPaid();
+
+
+            if($transfert->getFrais() !== null) {
+                $frais=$transfert->getFrais();
+                if ($frais !== 0 ) {
+                    if($transfert->getPaid()){
+                      $status=$transfert->getPaid();
+                    }
+                    if ($status === "NON") {
+                        $newmontant=$transfert->getMontant() - $transfert->getFrais();
+                        $transfert->setAmountToPaid($newmontant);
+                        foreach ($society as $s) {
+                            $caisse=$s->getCaisse();
+                            $caisse+=$frais;
+                            $s->setCaisse($caisse);
                         }
-                        if ($status == "NON") {
-                            $newmontant=$transfert->getMontant()-$transfert->getFrais();
-                            $transfert->setMontant($newmontant);
-                            foreach ($society as $s) {
-                                $caisse=$s->getCaisse();
-                                $caisse+=$frais;
-                                $s->setCaisse($caisse);
-                            }
-                        }  
-                    }  
-                }
-                else{
-                    $newmontant=false;
-                }
-            }
-            elseif(!$transfert->getClient()){
-                if($transfert->getFrais() !== null) {
-                    $frais=$transfert->getFrais();
-                    if ($frais !== 0 ) {
-                        if($transfert->getPaid()){
-                          $status=$transfert->getPaid();
-                        }
-                        if ($status == "NON") {
-                            $newmontant=$transfert->getMontant()-$transfert->getFrais();
-                            $transfert->setMontant($newmontant);
-                            foreach ($society as $s) {
-                                $caisse=$s->getCaisse();
-                                $caisse+=$frais;
-                                $s->setCaisse($caisse);
-                            }
-                        } 
-                        else{
-                            $newmontant=false;
-                        } 
+                    }
+                    else{
+                        $newmontant=0;
+                        $transfert->setAmountToPaid($transfert->getMontant());
                     }
                 }
             }
-            $this->getDoctrine()->getManager()->flush();
+            $transferDestination = $transfert->getTransagency()->getName();
+
+            if ($transferDestination == "CHINE") {
+                $amountToPaid = sprintf('%.3f', $transfert->getMontant() / 8.60);
+                $device = "FCFA";
+                $fraisDevice = "FCFA";
+                $amountToPaidDevice ="YEN";
+            }
+            elseif ($transferDestination == "MALI") {
+                $amountToPaid = sprintf('%.3f', $transfert->getMontant() * 8.60);
+                $device = "YEN";
+                $fraisDevice = "YEN";
+                $amountToPaidDevice ="FCFA";
+            }
+            else {
+                $amountToPaid = $transfert->getMontant();
+                $device = "FCFA";
+                $fraisDevice = "FCFA";
+                $amountToPaidDevice ="FCFA";
+            }
+            $amountToPaid = (float) $amountToPaid;
+
+
+            $bodyDestinateur = "Retrait d'argent -> `$transferDestination`. \n".
+                "Total:". "`{$transfert->getMontant()}`"." $device. \n".
+                "Frais de retrait: "."`{$transfert->getFrais()}`"." $fraisDevice. \n".
+//                "Montant payé: "."`{$transfert->getAmountToPaid()}`"." FCFA. \n".
+                "Montant payé: "."`{$amountToPaid}`"." $amountToPaidDevice. \n".
+                "Bien à vous "."`{$transfert->getDestinateur()}`".
+                ".\nTRAORE - SERVICE";
+
+            $bodyDestinataire = "Retrait d'argent -> `$transferDestination`. \n".
+                "Total: "."`{$transfert->getMontant()}`"." $device. \n".
+                "Frais de retrait: "."`{$transfert->getFrais()}`"." $fraisDevice. \n".
+//                "Montant payé: "."`{$transfert->getAmountToPaid()}`"." FCFA. \n".
+                "Montant payé: "."`{$amountToPaid}`"." $amountToPaidDevice. \n".
+                "Bien à vous "."`{$transfert->getDestinataire()}`".
+                ".\nTRAORE - SERVICE";
+            $this->whatsAppService->sendMessage($transfert->getTelsender(), $bodyDestinateur, "TRAORE SERVICE");
+            $this->whatsAppService->sendMessage($transfert->getTel(), $bodyDestinataire, "TRAORE SERVICE");
+
+            $this->em->flush();
             $this->addFlash("success", "Rétrait effectué avec succès.");
             return $this->redirectToRoute('receved',['id'=> $transfert->getId(), 'newamount'=>$newmontant],Response::HTTP_SEE_OTHER);
         }
@@ -305,16 +286,10 @@ class TransfertController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/receved/{id}", name="receved")
-     */
+    #[Route(path: '/receved/{id}', name: 'receved')]
     public function receved(Request $request, Transfert $transfert, SocietyRepository $societyRepository): Response
     {
-        if ($request->get('newamount')) {
-            $newamount=$request->get('newamount');
-        }else{
-            $newamount=false;
-        }
+        $newamount = $request->get('newamount') ? $request->get('newamount') : false;
         return $this->render('transfert/receved.html.twig', [
             'society'=>$societyRepository->findAll(),
             'transfert'=>$transfert,

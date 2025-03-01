@@ -3,33 +3,61 @@
 namespace App\Controller;
 
 use App\Entity\Agency;
+use App\Entity\User;
 use App\Form\Agency1Type;
+use App\Form\User1Type;
 use App\Repository\AgencyRepository;
 use App\Repository\SocietyRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/agency")
- */
+#[Route(path: '/agency')]
 class AgencyController extends AbstractController
 {
-    /**
-     * @Route("/", name="agency_index", methods={"GET"})
-     */
-    public function index(SocietyRepository $societyRepository, AgencyRepository $agencyRepository): Response
+    public function __construct (private EntityManagerInterface $em){}
+    #[Route(path: '/', name: 'agency_index', methods: ['GET', 'POST', 'PUT', 'DELETE'])]
+    public function index(Request $request, UserPasswordHasherInterface $passwordEncoder, SocietyRepository $societyRepository, AgencyRepository $agencyRepository): Response
     {
+        $user = new User();
+        $form = $this->createForm(User1Type::class, $user);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $user=$form->getData();
+            $password = $passwordEncoder->hashPassword($user,$user->getPassword());
+            $user->setPassword($password);
+            $access=$request->get('access');
+            if($access=="Admin"){
+                $user->setRoles(['ROLE_SOUS_ADMIN']);
+                $user->setType("Administrateur");
+            }
+            elseif ($access=="Checker") {
+                $user->setRoles(['ROLE_CHECKER']);
+                $user->setType("Checker");
+            }
+
+            else{
+                $user->setRoles(['ROLE_AGENT']);
+                $user->setType("Agent");
+            }
+
+
+            $this->em->persist($user);
+            $this->em->flush();
+            $this->addFlash("success", "Compte crée avec succès!");
+            return $this->redirectToRoute('dashboard');
+        }
         return $this->render('agency/index.html.twig', [
+            'form' => $form->createView(),
             'agencies' => $agencyRepository->findAll(),
             'society'=> $societyRepository->findAll(),
         ]);
     }
 
-    /**
-     * @Route("/new", name="agency_new", methods={"GET","POST"})
-     */
+    #[Route(path: '/new', name: 'agency_new', methods: ['GET', 'POST'])]
     public function new(SocietyRepository $societyRepository,Request $request): Response
     {
         $agency = new Agency();
@@ -37,7 +65,7 @@ class AgencyController extends AbstractController
         $form->handleRequest($request);
         $society=$societyRepository->findAll();
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->em;
             foreach ($society as $s) {
                $caisseg=$s->getCaisse();
                $agencycaisse=$agency->getCaisse();
@@ -50,16 +78,14 @@ class AgencyController extends AbstractController
             return $this->redirectToRoute('agency_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('agency/new.html.twig', [
+        return $this->render('agency/new.html.twig', [
             'agency' => $agency,
             'form' => $form,
             'society'=>$societyRepository->findAll(),
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="agency_show", methods={"GET"})
-     */
+    #[Route(path: '/{id}', name: 'agency_show', methods: ['GET'])]
     public function show(SocietyRepository $societyRepository, Agency $agency): Response
     {
         return $this->render('agency/show.html.twig', [
@@ -68,9 +94,7 @@ class AgencyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="agency_edit", methods={"GET","POST"})
-     */
+    #[Route(path: '/{id}/edit', name: 'agency_edit', methods: ['GET', 'POST'])]
     public function edit(SocietyRepository $societyRepository, Request $request, Agency $agency): Response
     {
         $agencyy=$agency;
@@ -81,7 +105,7 @@ class AgencyController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // if ($form['caisse']->getData()!='') {
             //     $upcaisse=$form['caisse']->getData();
-                
+
             //     foreach ($society as $s) {
             //         $caisseg=$s->getCaisse();
             //         $caisseg+=$upcaisse;
@@ -89,23 +113,21 @@ class AgencyController extends AbstractController
             //         $s->setCaisse($caisseg);
             //         $agency->setCaisse($agencycaisse);
             //     }
-                
+
             // }
-            $this->getDoctrine()->getManager()->flush();
+            $this->em->flush();
             $this->addFlash("success", "Agence modifiée avec succès!");
             return $this->redirectToRoute('agency_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('agency/edit.html.twig', [
+        return $this->render('agency/edit.html.twig', [
             'agency' => $agency,
             'form' => $form,
             'society'=>$societyRepository->findAll(),
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="agency_delete", methods={"POST"})
-     */
+    #[Route(path: '/{id}', name: 'agency_delete', methods: ['POST'])]
     public function delete(SocietyRepository $societyRepository, Request $request, Agency $agency): Response
     {
         if ($this->isCsrfTokenValid('delete'.$agency->getId(), $request->request->get('_token'))) {
@@ -116,7 +138,7 @@ class AgencyController extends AbstractController
             //     $caisseg+=$agencycaisse;
             //     $s->setCaisse($caisseg);
             // }
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->em;
             $entityManager->remove($agency);
             $entityManager->flush();
         }

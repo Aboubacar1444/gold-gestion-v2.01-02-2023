@@ -3,159 +3,13 @@
     <link rel="stylesheet" media="print" href="{{ asset('./assets/css/print.css') }}" />
 {% endblock %}
 {% block body %}
-    {% if transfert.client %}
-        <section class="container card" style="margin-top:5px!important;">
-            {% for society in society %} 
-                <div class="row mask">
-                    {% if society.logo %}
-                    <div class="col-md-12 mb-2">
-                        <div class="justify-content-center align-items-center mx-auto my-auto text-center">
-                            <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
-                        </div>
-                    </div>
-                    {% endif %}
-                    <div class="col-md-12">
-                        <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
-                    </div>
-                    <div class="row mx-auto">
-                        <div class="col-md-12 mx-auto mb-1">
-                            <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
-                            <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
-                            <h5 class="text-center font-weight-bold"> {{ app.user.agency ? app.user.agency.email : society.email }}</h5>
-                        </div>
-                        <div class="col-md-12 mx-auto text-center">
-                            <h5 class="text-center font-weight-bold"> {% if app.user.agency %} {{ app.user.agency.tel }} {% else %} {{ society.tel }} {% endif %}</h5>
-                            <code class="font-weight-bold font-italic mt-1 text-center justify-content-center align-center">Votre Satisfation, notre engagement!</code>
-                        </div>
-                        <div class="col-md-12 mx-auto rounded">
-                            <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Agence</u>: {{ transfert.agency }} </h5>
-                            <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Par</u>: {{ transfert.transagent }}</h5>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            <div class="row mask aqua-gradient-rgba">
-                <h1 class="mx-auto font-weight-bold white-text">Rétrait d'argent N° {{transfert.id}}</h1>
-            </div>
-            <div class="row mask mb-1">
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Expéditeur</u>: {{ transfert.client.fullname }}</h3>
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.client.tel }}</h3>
-            </div>
-            <div class="row mask">
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Destinataire</u>: {{ transfert.destinataire }}</h3>
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.tel }}</h3>
-            </div>
-            <div class="font-weight-bold text-black-50 mx-auto">
-                {{transfert.receveAt|date('d / m / Y - H:i:s')}} | Imprimé à <span class="time"><span>
-            </div>
-            <div class="container mt-2">
-                <div class="row mx-auto">
-                    <div class="col-md-8 mx-auto">
-                        <h3>Montant: <span id="number" class="font-weight-bold">{% if newamount %} {{ newamount|number_format(0,' ',' ') }} {% else %} {{ transfert.montant|number_format(0,' ',' ') }}  {% endif %}</span> FCFA</h3>
-                    </div>
-                    {# <div class="col-md-8 mx-auto">
-                        <h3>Secret id: <span id="" class="font-weight-bold"> {{ transfert.secretid }}</span></h3>
-                    </div> #}
-                    <div class="col-md-12 mx-auto">
-                        <h5><span id="inletter" class="inletter font-weight-bold"></span></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="container mb-5" style="margin-bottom:80px!important;">
-                <div class="row  text-center justify-content-center mx-auto">
-                    <div class="col-md-4 font-weight-bolder mx-auto">
-                        <h3><u>Gérant</u>:</h3>
-                    </div>
-                    <div class="col-md-4 font-weight-bolder mx-auto">
-                        <h3><u>Comptable</u>:</h3>
-                    </div>
-                    <div class="col-md-4 font-weight-bolder mx-auto">
-                        <h3><u>Client</u>:</h3>
-                    </div>
-                </div>
-            </div>
-            <hr style="border: 2px solid #ccc">
-            {% for society in society %} 
-                <div class="row mask">
-                    {% if society.logo %}
-                    <div class="col-md-12 mb-2">
-                        <div class="justify-content-center align-items-center mx-auto my-auto text-center">
-                            <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
-                        </div>
-                    </div>
-                    {% endif %}
-                    <div class="col-md-12">
-                        <h1 class="mx-auto font-weight-bold text-center">{{society.name}}</h1>
-                    </div>
-                    <div class="row mx-auto">
-                        <div class="col-md-12 mx-auto mb-1">
-                            <h5 class="text-center font-weight-bold"> {{ society.job }}</h5>
-                            <h5 class="text-center font-weight-bold"> {{ society.description }}</h5>
-                            <h5 class="text-center font-weight-bold"> {{ app.user.agency ? app.user.agency.email : society.email }}</h5>
-                        </div>
-                        <div class="col-md-12 mx-auto text-center">
-                            <h5 class="text-center font-weight-bold"> {% if app.user.agency %} {{ app.user.agency.tel }} {% else %} {{ society.tel }} {% endif %}</h5>
-                            <code class="font-weight-bold font-italic mt-1 text-center justify-content-center align-center">Votre Satisfation, notre engagement!</code>
-                        </div>
-                        <div class="col-md-12 mx-auto rounded">
-                            <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Agence</u>: {{ transfert.agency }} </h5>
-                            <h5 class="text-center font-weight-bold border rounded-sm border-warning p-2" style=""> <u>Par</u>: {{ transfert.transagent }}</h5>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            <div class="row mask aqua-gradient-rgba">
-                <h1 class="mx-auto font-weight-bold white-text">Rétrait d'argent N° {{transfert.id}}</h1>
-            </div>
-            <div class="row mask mb-1">
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Expéditeur</u>: {{ transfert.client.fullname }}</h3>
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.client.tel }}</h3>
-            </div>
-            <div class="row mask">
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Destinataire</u>: {{ transfert.destinataire }}</h3>
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.tel }}</h3>
-            </div>
-            <div class="font-weight-bold text-black-50 mx-auto mt-2">
-                {{transfert.receveAt|date('d / m / Y - H:i:s')}} | Imprimé à <span class="time"><span>
-            </div>
-            <div class="container mt-2">
-                <div class="row mx-auto">
-                    <div class="col-md-8 mx-auto">
-                        <h3>Montant: <span id="number" class="font-weight-bold">{% if newamount %} {{ newamount|number_format(0,' ',' ') }} {% else %} {{ transfert.montant|number_format(0,' ',' ') }}  {% endif %}</span> FCFA</h3>
-                    </div>
-                    {# <div class="col-md-8 mx-auto">
-                        <h3>Secret id: <span id="" class="font-weight-bold"> {{ transfert.secretid }}</span></h3>
-                    </div> #}
-                    <div class="col-md-12 mx-auto">
-                        <h5><span id="inletter" class="inletter font-weight-bold"></span></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="container mb-1">
-                <div class="row  text-center justify-content-center mx-auto">
-                    <div class="col-md-4 font-weight-bolder mx-auto">
-                        <h3><u>Gérant</u>:</h3>
-                    </div>
-                    <div class="col-md-4 font-weight-bolder mx-auto">
-                        <h3><u>Comptable</u>:</h3>
-                    </div>
-                    <div class="col-md-4 font-weight-bolder mx-auto">
-                        <h3><u>Client</u>:</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="row mx-auto">
-                <a name="" id="print" class="btn btn-rounded btn-lg btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
-            </div>
-        </section>
-    {% else %}
         <section class="container card" style="margin-top:10px!important;">
-            {% for society in society %} 
+            {% for society in society %}
                 <div class="row mask">
                     {% if society.logo %}
                     <div class="col-md-12 mb-2">
                         <div class="justify-content-center align-items-center mx-auto my-auto text-center">
-                            <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                            <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-20 text-center" width="50px"  alt="logo">
                         </div>
                     </div>
                     {% endif %}
@@ -188,15 +42,17 @@
             </div>
             <div class="row mask">
                 <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Destinataire</u>: {{ transfert.destinataire }}</h3>
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.tel }}</h3>                
+                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.tel }}</h3>
             </div>
             <div class="font-weight-bold text-black-50 mx-auto">
-                {{transfert.receveAt|date('d / m / Y - H:i:s')}} | Imprimé à <span class="time"><span>
+                {{transfert.receveAt|date('d / m / Y - H:i:s')}} | Imprimé à <span class="time"></span>
             </div>
             <div class="container mt-2">
                 <div class="row mx-auto">
-                    <div class="col-md-8 mx-auto">
-                        <h3>Montant: <span id="number" class="font-weight-bold">{% if newamount %} {{ newamount|number_format(0,' ',' ') }} {% else %} {{ transfert.montant|number_format(0,' ',' ') }}  {% endif %}</span> FCFA</h3>
+                    <div class="col-md-12 mx-auto justify-content-between">
+                        <h3>Montant Envoyé: <span id="number" class="font-weight-bold">{{ transfert.montant|number_format(0,' ',' ') }} </span> FCFA</h3>
+                        <h3>Frais: <span id="number" class="font-weight-bold"> {{ transfert.frais|number_format(0,' ',' ') }}</span> FCFA</h3>
+                        <h3>Montant Reçu: <span id="number" class="font-weight-bold"> {{ transfert.amountToPaid|number_format(0,' ',' ') }}</span> FCFA</h3>
                     </div>
                     {# <div class="col-md-8 mx-auto">
                         <h3>Secret id: <span id="" class="font-weight-bold"> {{ transfert.secretid }}</span></h3>
@@ -220,12 +76,12 @@
                 </div>
             </div>
             <hr style="border: 2px solid #ccc">
-            {% for society in society %} 
+            {% for society in society %}
                 <div class="row mask">
                     {% if society.logo %}
                     <div class="col-md-12 mb-2">
                         <div class="justify-content-center align-items-center mx-auto my-auto text-center">
-                            <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-25 text-center"  alt="logo">
+                            <img src="{{asset('./assets/files/' ~ society.logo)}}" class="img-fluid w-20 text-center" width="50px"  alt="logo">
                         </div>
                     </div>
                     {% endif %}
@@ -258,19 +114,19 @@
             </div>
             <div class="row mask">
                 <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Destinataire</u>: {{ transfert.destinataire }}</h3>
-                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.tel }}</h3>                
+                <h3 class="mx-auto font-weight-bolder pt-3 pr-0 col-md-6"> <u>Tel:</u>: {{ transfert.tel }}</h3>
             </div>
             <div class="font-weight-bold text-black-50 mx-auto">
-                {{transfert.receveAt|date('d / m / Y - H:i:s')}} | Imprimé à <span class="time"><span>
+                {{transfert.receveAt|date('d / m / Y - H:i:s')}} | Imprimé à <span class="time"></span>
             </div>
             <div class="container mt-1">
                 <div class="row mx-auto">
-                    <div class="col-md-8 mx-auto">
-                        <h3>Montant: <span id="number" class="font-weight-bold">{% if newamount %} {{ newamount|number_format(0,' ',' ') }} {% else %} {{ transfert.montant|number_format(0,' ',' ') }}  {% endif %}</span> FCFA</h3>
+                    <div class="col-md-12 mx-auto justify-content-between">
+                        <h3>Montant Envoyé: <span id="number" class="font-weight-bold">{{ transfert.montant|number_format(0,' ',' ') }} </span> FCFA</h3>
+                        <h3>Frais: <span id="number" class="font-weight-bold"> {{ transfert.frais|number_format(0,' ',' ') }}</span> FCFA</h3>
+                        <h3>Montant Reçu: <span id="number" class="font-weight-bold"> {{ transfert.amountToPaid|number_format(0,' ',' ') }}</span> FCFA</h3>
                     </div>
-                    {# <div class="col-md-8 mx-auto">
-                        <h3>Secret id: <span id="" class="font-weight-bold"> {{ transfert.secretid|number_format(0,' ',' ') }}</span></h3>
-                    </div> #}
+
                     <div class="col-md-12 mx-auto">
                         <h5><span id="inletter" class="inletter font-weight-bold"></span></h5>
                     </div>
@@ -290,23 +146,22 @@
                 </div>
             </div>
             <div class="row mx-auto">
-                <a name="" id="print" class="btn btn-rounded btn-lg btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
+                <a id="print" class="btn btn-rounded btn-lg btn-outline-warning mx-auto text-center"  role="button">Imprimer</a>
             </div>
-        </section>      
-    {% endif %}
+        </section>
 {% endblock %}
 {% block ScriptP %}
     <script>
-        $(document).ready(function(){ 
+        $(document).ready(function(){
             function formatDate(date) {
                 var d = new Date(date),
                     month = '' + (d.getMonth() + 1),
                     day = '' + d.getDate(),
                     year = d.getFullYear();
 
-                if (month.length < 2) 
+                if (month.length < 2)
                     month = '0' + month;
-                if (day.length < 2) 
+                if (day.length < 2)
                     day = '0' + day;
 
                 return [year, month, day].join('-');
@@ -319,12 +174,12 @@
                 return window.print();
             }
             $('#print').click(function(){
-                
+
                 Print();
             });
-            
+
             $('.inletter').text('Arrêtée à la somme de: ' +NumberToLetter($('#number').text() )+' FCFA');
-        
+
         });
     </script>
 {% endblock %}

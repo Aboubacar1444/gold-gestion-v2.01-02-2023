@@ -48,7 +48,7 @@ class TransfertcType extends AbstractType
                 'class'=>"App\Entity\Agency",
                 'required'=>true,
                 'attr'=>[
-                    'class'=>"md-form"
+                    'class'=>"custom-select"
                 ],
                 'placeholder'=>"Choisissez l'agence de réception",
                 'label'=>false,

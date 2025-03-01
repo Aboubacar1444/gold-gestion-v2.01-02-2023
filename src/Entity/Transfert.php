@@ -5,99 +5,73 @@ namespace App\Entity;
 use App\Repository\TransfertRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=TransfertRepository::class)
- */
+#[ORM\Entity(repositoryClass: TransfertRepository::class)]
 class Transfert
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="transferts")
-     */
-    private $client;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'transferts')]
+    private ?User $client = null;
 
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $montant;
+    #[ORM\Column(type: 'float')]
+    private ?float $montant = null;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $frais;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $frais = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $destinataire;
-    
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $tel;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $destinataire = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $agency;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $tel = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Agency::class, inversedBy="transferts")
-     */
-    private $transagency;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $agency = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $agent;
+    #[ORM\ManyToOne(targetEntity: Agency::class, inversedBy: 'transferts')]
+    private ?Agency $transagency = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $transagent;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $agent = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $facture;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $transagent = null;
 
-    /**
-     * @ORM\Column(type="bigint")
-     */
-    private $secretid;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $facture = null;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
-    private $sentAt;
+    #[ORM\Column(type: 'bigint')]
+    private ?int $secretid = null;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     */
-    private $receveAt;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $sentAt = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $destinateur;
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $receveAt = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $telsender;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $destinateur = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $paid;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $telsender = null;
 
-   
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $paid = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $amountToPaid = null;
+
+
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -261,10 +235,10 @@ class Transfert
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->getSecretid();
-    }
+//    public function __toString()
+//    {
+//        return $this->getSecretid();
+//    }
 
     public function getDestinateur(): ?string
     {
@@ -298,6 +272,18 @@ class Transfert
     public function setPaid(?string $paid): self
     {
         $this->paid = $paid;
+
+        return $this;
+    }
+
+    public function getAmountToPaid(): ?float
+    {
+        return $this->amountToPaid;
+    }
+
+    public function setAmountToPaid(?float $amountToPaid): static
+    {
+        $this->amountToPaid = $amountToPaid;
 
         return $this;
     }

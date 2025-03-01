@@ -6,7 +6,7 @@ use UltraMsg\WhatsAppApi;
 
 class WhatsAppService
 {
-    private ?String $token = "omra640n4jnjan4y" ;
+    private ?String $token = "omra640n4jnjan4yhhh" ;
     private ?String $instance_id = "instance41654";
 
 

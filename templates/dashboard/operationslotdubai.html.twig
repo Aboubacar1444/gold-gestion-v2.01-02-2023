@@ -26,7 +26,7 @@
         </div>
         {% if  transact is same as ('Lot Dubai') %}
             <div class="container">
-                
+
                     <div class="mx-auto">
                         <div class="md-form row">
                             <div class="md-form mx-auto col-md-1 my-0">
@@ -41,24 +41,24 @@
                             <div class="md-form mx-auto col-md-2 my-0">
                                 {{ form_row(form.totalm) }}
                             </div>
-                        </div> 
+                        </div>
                     </div>
                     <div class="row">
-                        <button type="submit" class="btn aqua-gradient btn-rounded font-weight-bold mx-auto" id="import">Valider</button> 
+                        <button type="submit" class="btn aqua-gradient btn-rounded font-weight-bold mx-auto" id="import">Valider</button>
                     </div>
-                {{ form_end(form) }} 
+                {{ form_end(form) }}
                 <div class="row">
-                    <a role="button" class="btn btn-warning btn-rounded font-weight-bold mx-auto" id="print" href="#" style="display:none;">Imprimer</a> 
+                    <a role="button" class="btn btn-warning btn-rounded font-weight-bold mx-auto" id="print" href="#" style="display:none;">Imprimer</a>
                 </div>
             </div>
-            
+
         {% endif %}
     </section>
 {% endblock %}
 {% block ScriptP %}
     <script>
         $(document).ready(function(){
-          
+
             var solde = parseFloat({{caisse}}) ;
             $('#operation_dubai_montant').change(function(){
                 montant=parseFloat($(this).val());
@@ -66,30 +66,30 @@
                     comis=parseFloat($(this).val());
                     total=parseFloat(montant+comis);
                     t = solde - total;
-                    
+
                     $('#operation_dubai_totalm').val(t);
                 })
             });
-           
-            
-            
+
+
+
             function formatDate(date) {
                 var d = new Date(date),
                     month = '' + (d.getMonth() + 1),
                     day = '' + d.getDate(),
                     year = d.getFullYear();
 
-                if (month.length < 2) 
+                if (month.length < 2)
                     month = '0' + month;
-                if (day.length < 2) 
+                if (day.length < 2)
                     day = '0' + day;
 
                 return [year, month, day].join('-');
             }
             $('#operation').on('submit', function(event){
                 event.preventDefault();
-                
-                
+
+
                 $.ajax({
                     url:"{{ path('operationlotdubai',{'transact': transact}) }}",
                     method:"POST",
@@ -112,7 +112,7 @@
                         link="{{ path('facturationtemplot', {'id':'idd', 'type':'typee', 'numero':'numeroo', 'date':'datee'}) }}";
                         a=link.replace('idd', response[0]);
                         b=a.replace('typee', response[1]);
-                        
+
                         c=b.replace('numeroo', response[4]);
                         d=c.replace('datee', response[2]);
                         if (response[5]){
@@ -120,10 +120,13 @@
                         }
                         $('#print').attr("href", d);
                         $('#print').show('fast');
+                    },
+                    error: function (error){
+                        console.log(error);
                     }
                 })
-                
-            }); 
+
+            });
         })
     </script>
 {% endblock %}

@@ -26,9 +26,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @Route("/dashboard")
  * @IsGranted("ROLE_USER")
  */
+#[Route(path: '/dashboard')]
 class DashboardController extends AbstractController
 {
     private ManagerRegistry $managerRegistry;
@@ -38,17 +38,15 @@ class DashboardController extends AbstractController
         $this->managerRegistry = $managerRegistry;
     }
 
-    /**
-     * @Route("/", name="dashboard")
-     */
-    public function index(Request $request, TransfertRepository $transfertRepository, OperationsRepository $operationsRepository, TokenStorageInterface $tokenStorageInterface, UserPasswordHasherInterface $passwordEncoder, SocietyRepository $societyRepository, UserRepository $userRepository): Response
+    #[Route(path: '/', name: 'dashboard')]
+    public function index(Request $request, TransfertRepository $transfertRepository,  TokenStorageInterface $tokenStorageInterface, UserPasswordHasherInterface $passwordEncoder, SocietyRepository $societyRepository, UserRepository $userRepository): Response
     {
         $em= $this->managerRegistry->getManager();
         $user = new User();
 
         $form = $this->createForm(User1Type::class, $user);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) { 
+        if($form->isSubmitted() && $form->isValid()) {
             $user=$form->getData();
             $password = $passwordEncoder->hashPassword($user,$user->getPassword());
             $user->setPassword($password);
@@ -61,25 +59,13 @@ class DashboardController extends AbstractController
                 $user->setRoles(['ROLE_CHECKER']);
                 $user->setType("Checker");
             }
-            elseif ($access=="Headmaster") {
-                $user->setRoles(['ROLE_HEADMASTER']);
-                $user->setType("Headmaster");
-            }
-            elseif ($access=="station-gerant") {
-                $user->setRoles(['ROLE_STATION_GERANT']);
-                $user->setType("station-gerant");
-            }
-            elseif ($access=="station-agent") {
-                $user->setRoles(['ROLE_STATION_AGENT']);
-                $user->setType("station-agent");
-            }
 
             else{
                 $user->setRoles(['ROLE_AGENT']);
                 $user->setType("Agent");
             }
-              
-            
+
+
             $em->persist($user);
             $em->flush();
             $this->addFlash("success", "Compte crée avec succès!");
@@ -88,7 +74,7 @@ class DashboardController extends AbstractController
 
         $formclient = $this->createForm(ClientType::class, $user);
         $formclient->handleRequest($request);
-        if ($formclient->isSubmitted() && $formclient->isValid()) { 
+        if ($formclient->isSubmitted() && $formclient->isValid()) {
             $user=$formclient->getData();
             $password = $passwordEncoder->hashPassword($user,'123456');
             $username=substr($user->getFullname(),0,9).random_int(12,1000);
@@ -97,7 +83,7 @@ class DashboardController extends AbstractController
             $user->setPassword($password);
             $user->setRoles(['ROLE_CLIENT']);
             $user->setType("Client");
-            
+
             $em->persist($user);
             $em->flush();
             $this->addFlash("success", "Client ajouté avec succès!");
@@ -106,7 +92,7 @@ class DashboardController extends AbstractController
 
         $formpass = $this->createForm(PassType::class, $user);
         $formpass->handleRequest($request);
-        if ($formpass->isSubmitted() && $formpass->isValid()) { 
+        if ($formpass->isSubmitted() && $formpass->isValid()) {
             $agent = $this->getUser();
             $password = $passwordEncoder->hashPassword($user, $formpass['password']->getData());
             $agent->setPassword($password);
@@ -119,8 +105,8 @@ class DashboardController extends AbstractController
 
         $formcaisse = $this->createForm(CaisseType::class, $Company);
         $formcaisse->handleRequest($request);
-        
-        if ($formcaisse->isSubmitted() && $formcaisse->isValid()) { 
+
+        if ($formcaisse->isSubmitted() && $formcaisse->isValid()) {
             foreach ($society as $k) {
                 $new=$formcaisse['caisse']->getData();
                 $dollar=$formcaisse['dollar']->getData();
@@ -135,8 +121,10 @@ class DashboardController extends AbstractController
                     $alimcaisse->setType("FCFA");
                     if ($request->get('date')) {
                         $alimcaisse->setCreatedAt(new \DateTimeImmutable(date($request->get('date'))));
-                    }else $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
-                    
+                    }else {
+                        $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
+                    }
+
                 }
                 if($dollar){
                     $caisse=$k->getDollar();
@@ -146,9 +134,11 @@ class DashboardController extends AbstractController
                     $alimcaisse->setType("Dollar");
                     if ($request->get('date')) {
                         $alimcaisse->setCreatedAt(new \DateTimeImmutable(date($request->get('date'))));
-                    }else $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
-                    
-                    
+                    }else {
+                        $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
+                    }
+
+
                 }
                 if($euro){
                     $caisse=$k->getEuro();
@@ -158,8 +148,10 @@ class DashboardController extends AbstractController
                     $alimcaisse->setType("Euro");
                     if ($request->get('date')) {
                         $alimcaisse->setCreatedAt(new \DateTimeImmutable(date($request->get('date'))));
-                    }else $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
-                    
+                    }else {
+                        $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
+                    }
+
                 }
                 if($caisseStation){
                     $caisse=$k->getCaisseStation();
@@ -169,7 +161,9 @@ class DashboardController extends AbstractController
                     $alimcaisse->setType("Caisse Station FCFA");
                     if ($request->get('date')) {
                         $alimcaisse->setCreatedAt(new \DateTimeImmutable(date($request->get('date'))));
-                    }else $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
+                    }else {
+                        $alimcaisse->setCreatedAt(new \DateTimeImmutable(date('Y-m-d H:i:s')));
+                    }
 
                 }
             }
@@ -191,7 +185,6 @@ class DashboardController extends AbstractController
                     'type'=>"Client"
                 ]
             );
-            $factures=$operationsRepository->findBy(['facture'=>'Ok'],['id'=>'DESC']);
             $transfert=$transfertRepository->findAll();
         }
         elseif ($this->isGranted("ROLE_SOUS_ADMIN")) {
@@ -205,7 +198,6 @@ class DashboardController extends AbstractController
                     'type'=>"Client"
                 ]
             );
-            $factures=$operationsRepository->findBy(['facture'=>'Ok'],['id'=>'DESC']);
             $transfert=$transfertRepository->findAll();
         }
         elseif ($this->isGranted("ROLE_CHECKER")) {
@@ -219,32 +211,7 @@ class DashboardController extends AbstractController
                     'type'=>"Client",
                 ]
             );
-            $factures=$operationsRepository->findBy(['facture'=>'Ok'],['id'=>'DESC']);
             $transfert=$transfertRepository->findAll();
-        }
-        elseif ($this->isGranted("ROLE_HEADMASTER")) {
-            $agents=$userRepository->findBy(
-                [
-                    'type'=>["Agent"],
-                    'agency'=>$this->getUser()->getAgency(),
-                ]
-            );
-            $clients=$userRepository->findBy(
-                [
-                    'type'=>"Client",
-                ]
-            );
-            $factures=$operationsRepository->findBy(['facture'=>'Ok','agency'=>$this->getUser()->getAgency()],['id'=>'DESC']);
-            $transfert=$transfertRepository->findBy(
-                ['agency'=>$this->getUser()->getAgency()->getName(),],
-                ['id'=>'DESC'],
-            );
-            if (!$transfert) {
-                $transfert=$transfertRepository->findBy(
-                    ['transagency'=>$this->getUser()->getAgency()],
-                    ['id'=>'DESC'],
-                );
-            }
         }
         else{
             $agents=false;
@@ -255,7 +222,6 @@ class DashboardController extends AbstractController
                     'type'=>"Client",
                 ]
             );
-            $factures=$operationsRepository->findBy(['facture'=>'Ok','agency'=>$this->getUser()->getAgency()],['id'=>'DESC']);
             $transfert=$transfertRepository->findBy(
                 ['agency'=>$this->getUser()->getAgency()->getName()],
                 ['id'=>'DESC'],
@@ -267,7 +233,7 @@ class DashboardController extends AbstractController
                 );
             }
         }
-        
+
         if ($request->get('secretid')) {
             $secretid=$request->get('secretid');
             if ($transfertRepository->findOneBy(['secretid'=>$secretid])) {
@@ -278,24 +244,23 @@ class DashboardController extends AbstractController
                 }else{
                     $this->addFlash("success", "Le secret ID est valide. Veuillez confirmer le rétrait.");
                     return $this->redirectToRoute('receive',['secretid'=> $secretid,'id'=>$transfert->getId()],Response::HTTP_SEE_OTHER);
-                }  
+                }
             }
             else {
                 $this->addFlash("error", "Le secret ID est invalide. Veuillez le vérifier.");
-                return $this->redirectToRoute('dashboard'); 
-            }     
+                return $this->redirectToRoute('dashboard');
+            }
         }
-        if($request->get('id') && $request->get('type')){
-            $delop = $operationsRepository->findOneBy(['id'=>$request->get('id'), 'type'=>$request->get('type')]);
+        /*if($request->get('id') && $request->get('type')){
             $client = $userRepository->findOneBy(['id'=>$request->get('client')]);
-            if ($client) $solde_client = $client->getSolde();
-            
-            if ($this->getUser()->getAgency()) {
-                $agencycaisse = $this->getUser()->getAgency()->getCaisse();
-            }else $agencycaisse = false;
-            
+            if ($client) {
+                $solde_client = $client->getSolde();
+            }
+
+            $agencycaisse = $this->getUser()->getAgency() ? $this->getUser()->getAgency()->getCaisse() : false;
+
             foreach ($society as $s) {
-                $caisse = $s->getCaisse(); 
+                $caisse = $s->getCaisse();
                 if ($delop->getType() == "Dépôt") {
                    $caisse -= $delop->getMontant();
                    if($client){
@@ -325,8 +290,8 @@ class DashboardController extends AbstractController
             $em->flush();
             $this->addFlash('success','Opération supprimée avec succès.');
             return $this->redirectToRoute('dashboard');
-        }
-        
+        }*/
+
         // $today= new \DateTime(date('Y-m-d 00:00:00'));
         // $expAt= new \DateTime(date('2021-10-25 00:00:00'));
         $useragent=$_SERVER['HTTP_USER_AGENT'];
@@ -337,11 +302,7 @@ class DashboardController extends AbstractController
 //            return new JsonResponse ('Erreur 403: Accèss non configurés.');
 //        }
 
-        if (in_array("ROLE_STATION_AGENT", $this->getUser()->getRoles()) ||
-            in_array("ROLE_STATION_GERANT", $this->getUser()->getRoles())  ) {
 
-            return $this->redirectToRoute('app_station_dashboard');
-        }
 
         return $this->render('dashboard/index.html.twig', [
                 'form' => $form->createView(),
@@ -351,7 +312,6 @@ class DashboardController extends AbstractController
                 'clients' => $clients,
                 'agents' => $agents,
                 'formcaisse' => $formcaisse->createView(),
-                'factures' => $factures,
                 'transferts' => $transfert,
 
             ]);
@@ -360,65 +320,61 @@ class DashboardController extends AbstractController
 
 
 
-    /**
-     * @Route("/daysoperations", name="findetat")
-     */
-    public function FindEtat(Request $request, OperationsRepository $operationsRepository, AlimentationCaisseRepository $alimcaisse, SocietyRepository $societyRepository, UserRepository $userRepository): Response
+    #[Route(path: '/daysoperations', name: 'findetat')]
+    public function FindEtat(Request $request, TransfertRepository $transfertRepository, AlimentationCaisseRepository $alimcaisse, SocietyRepository $societyRepository, UserRepository $userRepository): Response
     {
-        // $Company= new Society();
+        $defaultDate =new \DateTimeImmutable();
+        $date = $request->request->get('date') ?? $defaultDate->format('Y-m-d');
+
         $society=$societyRepository->findAll();
-        $operations=$operationsRepository->findBy(
-            [
-                'createdAt'=>new \DateTime(date('Y-m-d 00:00:00')), 
-                'facture'=>"Ok",
-                'type'=>['Dépôt', "Rétrait", "FD", "FE", "DF", "EF", "Achat", "Vente"],
-            ],
-            ['id'=>'DESC'],
-        );    
+        $operations=$transfertRepository->findByDate($date);
+        $dayTotal = 0;
+        $dayTotalChina = 0;
+        $dayTotalMali = 0;
+        $dayTotalRetrait = 0;
+        $dayTotalRetraitChina = 0;
+        $dayTotalRetraitMali = 0;
+//        $dayTotalRetraitFrais = 0;
+
+        foreach ($operations as $transfert) {
+            $dayTotal += $transfert->getMontant();
+            if ($transfert->getReceveAt()) {
+                $dayTotalRetrait += $transfert->getMontant();
+            }
+            if ($transfert->getTransagency()->getName() == "CHINE"){
+                $dayTotalChina = $dayTotal / 8.60;
+                $dayTotalRetraitChina = $dayTotalRetrait / 8.60;
+            }else{
+                $dayTotalMali=$dayTotal * 8.60;
+                $dayTotalRetraitMali = $dayTotalRetrait * 8.60;
+            }
+
+        }
+
         return $this->render('dashboard/etat.html.twig',[
             'operations'=>$operations,
             'society'=>$society,
-            'caisseEtat'=>$alimcaisse->findBy(['type'=>['FCFA', 'Dollar', 'Euro']],['id'=>'DESC']),
+            'date' => $date,
+            'dayTotalChina' => $dayTotalChina,
+            'dayTotalMali' => $dayTotalMali,
+            'dayTotalRetraitChina' => $dayTotalRetraitChina,
+            'dayTotalRetraitMali' => $dayTotalRetraitMali,
         ]);
     }
 
-    /**
-     * @Route("/getoperations", name="getoperations")
-     */
-    public function FindOperations(Request $request, OperationsRepository $operationsRepository): Response
+    #[Route(path: '/getoperations', name: 'getoperations')]
+    public function FindOperations(OperationsRepository $operationsRepository): Response
     {
-       if ($this->getUser()->getAgency()) {
-           $agency= $this->getUser()->getAgency()->getId();
-       }else $agency = null;
+       $agency = $this->getUser()->getAgency() ? $this->getUser()->getAgency()->getId() : null;
         return new JsonResponse($operationsRepository->getOperations($agency));
     }
-    /**
-     * @Route("/getstatus", name="getstatus")
-    */
-    public function FindStatus(Request $request, UserRepository $userRepository): Response
+    #[Route(path: '/getstatus', name: 'getstatus')]
+    public function FindStatus(UserRepository $userRepository): Response
     {
         $status=$userRepository->getStatus();
         return new JsonResponse($status);
     }
 
-    /**
-     * @Route("/etatdubai", name="etat")
-     */
-    public function EtatDubai(Request $request, AlimentationCaisseRepository $alimcaisse, UserRepository $userRepository,SocietyRepository $societyRepository, OperationsRepository $operationsRepository): Response
-    {
-        if ($request->get('agent')) {
-            $filterByAgent=$operationsRepository->FilterByAgent($request->get('agent'));
-            return new JsonResponse($filterByAgent);
-        }
 
-        return $this->render('dashboard/etatdubai.html.twig', [
-            'society' => $societyRepository->findAll(),
-            'operations'=>$operationsRepository->findBy(['type'=>"Lot Dubai", 'facture'=>'Ok'], ['id'=>'DESC']),
-            'user'=>$userRepository->findBy(
-                ['type'=>['Super', 'Administrateur', 'Checker', 'Headmaster', 'Agent'] ]
-            ),
-            'alimcaisse'=> $alimcaisse->findAll(),
-        ]);
-    }
 
 }

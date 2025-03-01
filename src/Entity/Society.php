@@ -5,68 +5,45 @@ namespace App\Entity;
 use App\Repository\SocietyRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=SocietyRepository::class)
- */
+#[ORM\Entity(repositoryClass: SocietyRepository::class)]
 class Society
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $name;
 
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $job;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $job;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $logo;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private string $logo;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $caisse;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private float $caisse;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $tel;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $tel;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $dollar;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private string $description;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $euro;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private string $email;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $description;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $email;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $caisseStation;
+
+   public function setId(int $id): static
+   {
+        $this->id = $id;
+        return $this;
+   }
 
     public function getId(): ?int
     {
@@ -133,29 +110,7 @@ class Society
         return $this;
     }
 
-    public function getDollar(): ?float
-    {
-        return $this->dollar;
-    }
 
-    public function setDollar(?float $dollar): self
-    {
-        $this->dollar = $dollar;
-
-        return $this;
-    }
-
-    public function getEuro(): ?float
-    {
-        return $this->euro;
-    }
-
-    public function setEuro(?float $euro): self
-    {
-        $this->euro = $euro;
-
-        return $this;
-    }
 
     public function getDescription(): ?string
     {
@@ -181,16 +136,6 @@ class Society
         return $this;
     }
 
-    public function getCaisseStation(): ?float
-    {
-        return $this->caisseStation;
-    }
 
-    public function setCaisseStation(?float $caisseStation): self
-    {
-        $this->caisseStation = $caisseStation;
-
-        return $this;
-    }
 
 }

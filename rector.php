@@ -1,24 +1,20 @@
 <?php
-
-declare(strict_types=1);
-
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
+use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Php74\Rector\Property\TypedPropertyRector;
+use Rector\Set\ValueObject\SetList;
 use Rector\Config\RectorConfig;
-use Rector\Set\ValueObject\LevelSetList;
+use Rector\Symfony\Set\SymfonySetList;
+
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
-        __DIR__ . '/config',
-        __DIR__ . '/public',
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
+    // here we can define, what sets of rules will be applied
+    // tip: use "SetList" class to autocomplete sets
+    $rectorConfig->sets([
+        SetList::CODE_QUALITY,
+        DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
+        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
+        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
+        SymfonySetList::SYMFONY_CODE_QUALITY
     ]);
-
-    // register a single rule
-    $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-
-    // define sets of rules
-    //    $rectorConfig->sets([
-    //        LevelSetList::UP_TO_PHP_72
-    //    ]);
+    // register single rule
 };

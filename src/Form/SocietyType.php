@@ -46,7 +46,7 @@ class SocietyType extends AbstractType
             ->add('tel',TextType::class,[
                 'label'=>false,
                 'attr'=>[
-                    'placeholder'=>"Téléphone de la sociét",
+                    'placeholder'=>"Téléphone de la société",
                     'class'=>'md-textarea'
                 ],
             ])

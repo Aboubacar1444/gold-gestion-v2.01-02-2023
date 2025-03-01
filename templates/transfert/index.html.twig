@@ -1,70 +1,5 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    {% if client %}
-        <section class="container card" style="margin-top:10px!important;">
-            <div class="row mask aqua-gradient-rgba">
-                <h1 class="mx-auto font-weight-bold white-text"> Formulaire - Transfert d'argent</h1>
-            </div>
-            <div class="row mask" style="border-bottom:2px solid grey">
-                <h3 class="font-weight-bolder pt-3 pr-0 ml-0 pl-0 col-md-7 text-center"> <u>Expéditeur</u></h3>
-                
-                <div class="row text-black-50 font-weight-bold" style="border-left:2px solid;">
-                    <div class="md-form col-md-6 mx-auto">
-                        {{ client.fullname }}
-                    </div>
-                    <div class="md-form col-md-6 mx-auto">
-                        {{ client.tel }}
-                    </div>
-                    
-                </div>
-            </div>
-            
-                {{ form_start(form, {'attr':{'id':'operation'}}) }}
-                <div class="row mask" style="border-bottom:2px solid grey">
-                    <h3 class="font-weight-bolder pt-3 pr-0 ml-0 pl-0 text-center col-md-7"> <u>Destinataire</u></h3>
-                    <div class="row text-black-50 font-weight-bold" style="border-left:2px solid;">
-                        <div class="md-form col-md-6 mx-auto font-weight-bold">
-                            {{ form_row(form.destinataire) }}
-                        </div>
-                        <div class="md-form col-md-6 mx-auto">
-                            {{ form_row(form.tel) }}
-                        </div>
-                        
-                    </div>
-                </div>
-            <div class="font-weight-bold text-black-50 mx-auto">
-                {{'now'|date('d / m / Y')}}
-            </div>
-            <div class="container">   
-                <div class="mx-auto">
-                    <div class="row font-weight-bold">
-                        <div class="md-form mx-auto col-md-2">
-                            {{ form_row(form.montant) }}
-                        </div>
-                        <div class="md-form mx-auto col-md-2">
-                            {{ form_row(form.frais) }}
-                        </div>
-                        <div class="form-check form-check-inline col-md-2">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="status" value="NON"/>
-                            <label class="form-check-label" for="inlineCheckbox1" id="f">Frais payés à la réception.</label>
-                        </div>
-                        <div class="form-check form-check-inline col-md-2">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="statusclient" value="NON" />
-                            <label class="form-check-label" for="inlineCheckbox2" id="f1">Frais payés par le client</label>
-                        </div>
-                        <div class="mx-auto col-lg-4 col-md-6 md-form">
-                            {{ form_row(form.transagency) }}
-                            <h4 style="display:none;" id="show">Solde: <span id="caisse" class="font-weight-bold"> </span> FCFA</h4>
-                        </div>
-                    </div> 
-                </div>
-                <div class="row">
-                    <button type="submit" class="btn aqua-gradient btn-rounded font-weight-bold mx-auto" id="import">Valider</button> 
-                </div>
-                {{ form_end(form) }} 
-            </div>
-        </section>
-    {% else %}
         <section class="container card" style="margin-top:10px!important;">
             <div class="row mask aqua-gradient-rgba">
                 <h1 class="mx-auto font-weight-bold white-text"> Formulaire - Transfert d'argent</h1>
@@ -79,7 +14,7 @@
                     <div class="md-form col-md-6 mx-auto">
                         {{ form_row(form.telsender) }}
                     </div>
-                    
+
                 </div>
             </div>
             <div class="row mask" style="border-bottom:2px solid grey">
@@ -91,7 +26,7 @@
                     <div class="md-form col-md-6 mx-auto">
                         {{ form_row(form.tel) }}
                     </div>
-                    
+
                 </div>
             </div>
             <div class="font-weight-bold text-black-50 mx-auto">
@@ -102,7 +37,7 @@
                     <h5 class="font-weight-bold"> {{app.user.agency}}</h5>
                 </div>
             {% endif %}
-            <div class="container">   
+            <div class="container">
                 <div class="mx-auto">
                     <div class="row font-weight-bold">
                         <div class="md-form mx-auto col-md-3">
@@ -111,22 +46,30 @@
                         <div class="md-form mx-auto col-md-2">
                             {{ form_row(form.frais) }}
                         </div>
-                        <div class="form-check form-check-inline col-md-2">
+                        <div class="form-check form-check-inline col-md-4">
                             <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="status" value="NON" />
-                            <label class="form-check-label" for="inlineCheckbox1" id="f">Frais payés à la réception.</label>
+                            <label class="form-check-label" for="inlineCheckbox1" id="f">Frais payés à la réception.(par défaut)</label>
                         </div>
                         <div class="mx-auto col-lg-4 col-md-6 md-form">
-                            {{ form_row(form.transagency) }}
+                            {{ form_row(form.transagency, {
+                                'attr':{
+                                    'data-live-search':"true",
+                                    'data-size':"sm",
+                                    'data-width':"80%",
+                                    'data-show-label':"false",
+                                    'class':'custom-select form-select'
+                                }
+                            }) }}
                             <h4 style="display:none;" id="show">Solde: <span id="caisse" class="font-weight-bold"> </span> FCFA</h4>
-                    </div> 
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
-                    <button type="submit" class="btn aqua-gradient btn-rounded font-weight-bold mx-auto" id="import">Valider</button> 
+                    <button type="submit" class="btn aqua-gradient btn-rounded font-weight-bold mx-auto" id="import">Valider</button>
                 </div>
-                {{ form_end(form) }} 
+                {{ form_end(form) }}
             </div>
-        </section>      
-    {% endif %}
+        </section>
 {% endblock %}
 {% block ScriptP %}
     <script>
@@ -142,25 +85,15 @@
                 }
             });
 
-            $("#inlineCheckbox2").click(function(){
-                if($(this).is(":checked")){
-                    $("#f1").text("Frais enlévés du solde client.");
-                    $(this).val("OUI");
-                }else if($(this).is(":not(:checked)")){
-                    $("#f1").text('Frais payés par le client.');
-                    $(this).val("NON");
-                }
-            });
-
             function formatDate(date) {
                 var d = new Date(date),
                     month = '' + (d.getMonth() + 1),
                     day = '' + d.getDate(),
                     year = d.getFullYear();
 
-                if (month.length < 2) 
+                if (month.length < 2)
                     month = '0' + month;
-                if (day.length < 2) 
+                if (day.length < 2)
                     day = '0' + day;
 
                 return [year, month, day].join('-');
@@ -185,7 +118,7 @@
                     console.log(error);
                 }
               });
-               
+
            }
            $('#transfertc_transagency, #transfert_transagency').change(function(){
                var agency = $(this).val();

@@ -7,60 +7,46 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=AgencyRepository::class)
- */
+#[ORM\Entity(repositoryClass: AgencyRepository::class)]
 class Agency
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $tel;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $caisse;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $tel;
 
-    /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="agency")
-     */
-    private $users;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private string $caisse;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Operations::class, mappedBy="agency")
-     */
-    private $operations;
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'agency')]
+    private Collection $users;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Transfert::class, mappedBy="transagency")
-     */
-    private $transferts;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\OneToMany(targetEntity: Transfert::class, mappedBy: 'transagency')]
+    private Collection  $transferts;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $email;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->operations = new ArrayCollection();
         $this->transferts = new ArrayCollection();
     }
 
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -122,11 +108,9 @@ class Agency
 
     public function removeUser(User $user): self
     {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getAgency() === $this) {
-                $user->setAgency(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->users->removeElement($user) && $user->getAgency() === $this) {
+            $user->setAgency(null);
         }
 
         return $this;
@@ -136,35 +120,9 @@ class Agency
         return $this->getName();
     }
 
-    /**
-     * @return Collection|Operations[]
-     */
-    public function getOperations(): Collection
-    {
-        return $this->operations;
-    }
 
-    public function addOperation(Operations $operation): self
-    {
-        if (!$this->operations->contains($operation)) {
-            $this->operations[] = $operation;
-            $operation->setAgency($this);
-        }
 
-        return $this;
-    }
 
-    public function removeOperation(Operations $operation): self
-    {
-        if ($this->operations->removeElement($operation)) {
-            // set the owning side to null (unless already changed)
-            if ($operation->getAgency() === $this) {
-                $operation->setAgency(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|Transfert[]
@@ -186,11 +144,9 @@ class Agency
 
     public function removeTransfert(Transfert $transfert): self
     {
-        if ($this->transferts->removeElement($transfert)) {
-            // set the owning side to null (unless already changed)
-            if ($transfert->getTransagency() === $this) {
-                $transfert->setTransagency(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->transferts->removeElement($transfert) && $transfert->getTransagency() === $this) {
+            $transfert->setTransagency(null);
         }
 
         return $this;

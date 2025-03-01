@@ -1,6 +1,6 @@
 security:
     # https://symfony.com/doc/current/security/experimental_authenticators.html
-    enable_authenticator_manager: true
+#    enable_authenticator_manager: true
     password_hashers:
         App\Entity\User:
             algorithm: auto
@@ -24,7 +24,8 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 target: app_login
-                handlers: [app.logout.listener]
+#                handlers: [app.logout.listener]
+                invalidate_session: true
             remember_me:
                 secret:   '%kernel.secret%'
                 path:     /dashboard

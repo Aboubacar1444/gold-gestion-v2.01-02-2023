@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SellCarburantType extends AbstractType
@@ -48,20 +50,23 @@ class SellCarburantType extends AbstractType
                     'Voiture' => 'Voiture',
                     'Tricycle' => 'Tricycle',
                     'Moto' => "Moto",
+                    "Autre (préciser)" => "Autre"
                 ],
                 'placeholder'=>"Selectionnez le type de véhicule",
-                'invalid_message'=>'Veuillez selectionner le type de véhicule.'
+                'invalid_message'=>'Veuillez selectionner le type de véhicule.',
+
             ])
-//            ->add('client', TextType::class, [
-//                'label'=>"Client",
-//                'attr'=>[
-//                    'class'=>'md-form',
-//                    'placeholder'=>"Nom complet du client (facultatif)",
-//                ],
-//                'required'=>false,
-//                'invalid_message'=>'Veuillez entrer le nom complet du client.'
-//
-//            ])
+
+            ->add('client', TextType::class, [
+                'label' => "Client",
+                'attr' => [
+                    'class' => 'md-form',
+                    'placeholder' => "Nom complet du client (facultatif)",
+                ],
+                'required' => false,
+                'invalid_message' => 'Veuillez entrer le nom complet du client.',
+            ])
+
             ->add('buyAt',null, [
                 'label'=>"Date d'achat",
                 'attr'=>[
@@ -79,6 +84,8 @@ class SellCarburantType extends AbstractType
             ])
 
         ;
+
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

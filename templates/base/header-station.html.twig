@@ -3,18 +3,28 @@
             <div class="btn-toggle">
                 <a href="#offcanvasPrimaryMenu" data-bs-toggle="offcanvas"><i class="material-icons-outlined">menu</i></a>
             </div>
-
-            <ul class="navbar-nav gap-1 nav-right-links align-items-center">
-                {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SOUS_ADMIN") or is_granted("ROLE_STATION_GERANT") %}
+        {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_SOUS_ADMIN") or is_granted("ROLE_STATION_GERANT") %}
                 <li class="nav-item">
-
-                    <h4 class="mb-0 fw-bold ">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fadeIn animated bx bx-gas-pump "></i>
+                        {{ totalEssenceStation }} litre Essence
+                   </h5>
+                </li>
+                <li class="nav-item ">
+                    <h5 class="mb-0 fw-bold ">
+                        <i class="fadeIn animated bx bx-gas-pump "></i>
+                        {{ totalGazoilStation }} litre Gazoil
+                    </h5>
+                </li>
+            <ul class="navbar-nav gap-1 nav-right-links align-items-center">
+                <li class="nav-item">
+                    <h5 class="mb-0 fw-bold ">
                         <i class="fadeIn animated bx bx-money "></i>
                         {{ caisseStation }} FCFA
-                   </h4>
+                    </h5>
                 </li>
-                {% endif %}
             </ul>
+        {% endif %}
         </nav>
 
     <aside class="mini-sidebar d-flex align-items-center flex-column justify-content-between">

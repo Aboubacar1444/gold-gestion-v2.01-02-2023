@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -85,7 +86,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
     */
-    
+
     public function getStatus(): array
     {
         $em = $this->getEntityManager()->getConnection();
@@ -94,5 +95,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $em->fetchAllAssociative($req);
 
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getStationsEmployees()
+    {
+
+        return $this->createQueryBuilder('u')
+            ->where('u.type = :typeAgent')
+            ->orWhere('u.type = :typeGerant')
+            ->setParameter('typeAgent','station-agent')
+            ->setParameter('typeGerant','station-gerant')
+            ->getQuery()
+            ->getResult();
     }
 }

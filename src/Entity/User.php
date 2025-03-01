@@ -9,79 +9,55 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="`user`")
- */
+#[ORM\Table(name: '`user`')]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private $username;
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    private string $username;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: 'json')]
     private $roles = [];
 
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     */
-    private $password;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $type;
+    #[ORM\Column(type: 'string')]
+    private string $password;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $solde;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $type = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $tel;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $solde = 0.0;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $fullname;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $tel;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Agency::class, inversedBy="users")
-     */
-    private $agency;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $fullname;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Operations::class, mappedBy="client")
-     */
-    private $operations;
+    #[ORM\ManyToOne(targetEntity: Agency::class, inversedBy: 'users')]
+    private ?Agency $agency = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Transfert::class, mappedBy="client")
-     */
-    private $transferts;
+    #[ORM\OneToMany(targetEntity: Transfert::class, mappedBy: 'client')]
+    private Collection $transferts;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $isconnected;
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private ?bool $isconnected = false;
 
     public function __construct()
     {
-        $this->operations = new ArrayCollection();
         $this->transferts = new ArrayCollection();
+    }
+
+    public function setId (int $id): static
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getId(): ?int
@@ -162,10 +138,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+//         $this->plainPassword = null;
     }
 
     public function getType(): ?string
@@ -229,36 +205,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|Operations[]
-     */
-    public function getOperations(): Collection
-    {
-        return $this->operations;
-    }
-
-    public function addOperation(Operations $operation): self
-    {
-        if (!$this->operations->contains($operation)) {
-            $this->operations[] = $operation;
-            $operation->setClient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOperation(Operations $operation): self
-    {
-        if ($this->operations->removeElement($operation)) {
-            // set the owning side to null (unless already changed)
-            if ($operation->getClient() === $this) {
-                $operation->setClient(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Transfert[]
      */
     public function getTransferts(): Collection
@@ -278,11 +224,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeTransfert(Transfert $transfert): self
     {
-        if ($this->transferts->removeElement($transfert)) {
-            // set the owning side to null (unless already changed)
-            if ($transfert->getClient() === $this) {
-                $transfert->setClient(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->transferts->removeElement($transfert) && $transfert->getClient() === $this) {
+            $transfert->setClient(null);
         }
 
         return $this;
